@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Pitches - E-shark Tank</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#4F46E5", secondary: "#10B981" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #ffffff;
+      }
+      h1, h2, h3, h4, h5, h6 {
+      font-family: 'Inter', sans-serif;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+      }
+      input[type="number"] {
+      -moz-appearance: textfield;
+      }
+      .custom-checkbox {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s;
+      }
+      .custom-checkbox:checked {
+      background-color: #4F46E5;
+      border-color: #4F46E5;
+      }
+      .custom-checkbox:checked::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 6px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      }
+      .custom-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      }
+      .custom-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      }
+      .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e5e7eb;
+      transition: .4s;
+      border-radius: 24px;
+      }
+      .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      }
+      input:checked + .switch-slider {
+      background-color: #4F46E5;
+      }
+      input:checked + .switch-slider:before {
+      transform: translateX(20px);
+      }
+      .custom-range {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 5px;
+      background: #e5e7eb;
+      outline: none;
+      }
+      .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #4F46E5;
+      cursor: pointer;
+      }
+      .custom-range::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #4F46E5;
+      cursor: pointer;
+      border: none;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <div class="min-w-[1024px]">
+      <!-- Header -->
+      <header
+        class="bg-white shadow-sm py-4 px-6 flex items-center justify-between"
+      >
+        <div class="flex items-center">
+          <a
+            href="https://readdy.ai/home/d90d3948-d723-414d-b599-957eee3d081b/5d9585f9-343b-4c9f-895f-6b283e6b8b1e"
+            data-readdy="true"
+            class="text-gray-800 font-medium flex items-center"
+          >
+            <div class="w-10 h-10 flex items-center justify-center mr-2">
+              <i class="ri-home-line ri-lg"></i>
+            </div>
+            <span>Home</span>
+          </a>
+        </div>
+        <div class="w-2/5 relative">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+          >
+            <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+              <i class="ri-search-line"></i>
+            </div>
+          </div>
+          <input
+            type="text"
+            placeholder="Search for pitches..."
+            class="w-full pl-10 pr-4 py-2 border-none bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+          />
+        </div>
+        <button
+          class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button flex items-center whitespace-nowrap"
+        >
+          <div class="w-5 h-5 flex items-center justify-center mr-2">
+            <i class="ri-logout-box-line"></i>
+          </div>
+          Logout
+        </button>
+      </header>
+
+      <!-- Breadcrumb Navigation -->
+      <div class="bg-gray-50 border-b border-gray-200">
+        <div class="container mx-auto px-6 py-3">
+          <div class="flex items-center text-sm">
+            <a
+              href="https://readdy.ai/home/d90d3948-d723-414d-b599-957eee3d081b/5d9585f9-343b-4c9f-895f-6b283e6b8b1e"
+              data-readdy="true"
+              class="text-gray-600 hover:text-primary"
+              >Home</a
+            >
+            <div
+              class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1"
+            >
+              <i class="ri-arrow-right-s-line"></i>
+            </div>
+            <span class="text-gray-900 font-medium">All Pitches</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="container mx-auto px-6 py-8">
+        <div class="flex justify-between items-center mb-8">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">All Pitches</h1>
+            <p class="text-gray-600">
+              Browse and discover innovative ideas from entrepreneurs across
+              various industries.
+            </p>
+          </div>
+          <a
+            href="check.html"
+            data-readdy="true"
+            class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button flex items-center whitespace-nowrap"
+          >
+            <div class="w-5 h-5 flex items-center justify-center mr-2">
+              <i class="ri-arrow-left-line"></i>
+            </div>
+            Back to Dashboard
+          </a>
+        </div>
+
+        <!-- Filter & Sort Section -->
+        <div class="bg-white rounded shadow-sm p-4 mb-8">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- Category Filter -->
+              <div class="relative">
+                <button
+                  id="categoryFilter"
+                  class="bg-white border border-gray-300 text-gray-700 px-4 py-2 !rounded-button flex items-center whitespace-nowrap"
+                >
+                  <div
+                    class="w-5 h-5 flex items-center justify-center mr-2 text-gray-500"
+                  >
+                    <i class="ri-filter-3-line"></i>
+                  </div>
+                  <span>Category</span>
+                  <div class="w-5 h-5 flex items-center justify-center ml-2">
+                    <i class="ri-arrow-down-s-line"></i>
+                  </div>
+                </button>
+                <div
+                  id="categoryDropdown"
+                  class="hidden absolute z-10 mt-1 w-56 bg-white border border-gray-300 rounded shadow-lg"
+                >
+                  <div class="p-2 max-h-60 overflow-y-auto">
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="catAll"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="catAll" class="cursor-pointer"
+                        >All Categories</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="catTech"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="catTech" class="cursor-pointer"
+                        >Technology</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="catHealth"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="catHealth" class="cursor-pointer"
+                        >Healthcare</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="catFinance"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="catFinance" class="cursor-pointer"
+                        >Finance</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="catEdu"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="catEdu" class="cursor-pointer"
+                        >Education</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="catSus"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="catSus" class="cursor-pointer"
+                        >Sustainability</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="catAgri"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="catAgri" class="cursor-pointer"
+                        >Agriculture</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="catFood"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="catFood" class="cursor-pointer"
+                        >Food Tech</label
+                      >
+                    </div>
+                  </div>
+                  <div class="border-t border-gray-200 p-2">
+                    <button
+                      class="w-full bg-primary text-white px-3 py-1.5 !rounded-button text-sm whitespace-nowrap"
+                    >
+                      Apply Filters
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Date Filter -->
+              <div class="relative">
+                <button
+                  id="dateFilter"
+                  class="bg-white border border-gray-300 text-gray-700 px-4 py-2 !rounded-button flex items-center whitespace-nowrap"
+                >
+                  <div
+                    class="w-5 h-5 flex items-center justify-center mr-2 text-gray-500"
+                  >
+                    <i class="ri-calendar-line"></i>
+                  </div>
+                  <span>Date Posted</span>
+                  <div class="w-5 h-5 flex items-center justify-center ml-2">
+                    <i class="ri-arrow-down-s-line"></i>
+                  </div>
+                </button>
+                <div
+                  id="dateDropdown"
+                  class="hidden absolute z-10 mt-1 w-56 bg-white border border-gray-300 rounded shadow-lg"
+                >
+                  <div class="p-3">
+                    <div class="space-y-3">
+                      <label class="flex items-center">
+                        <input type="radio" name="dateFilter" class="mr-2" />
+                        <span>All Time</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="radio" name="dateFilter" class="mr-2" />
+                        <span>Today</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="radio" name="dateFilter" class="mr-2" />
+                        <span>This Week</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="radio" name="dateFilter" class="mr-2" />
+                        <span>This Month</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="radio" name="dateFilter" class="mr-2" />
+                        <span>Last 3 Months</span>
+                      </label>
+                      <div>
+                        <p class="mb-2 text-sm font-medium">Custom Range</p>
+                        <div class="flex items-center space-x-2">
+                          <input
+                            type="date"
+                            class="px-2 py-1 border border-gray-300 rounded text-sm w-full"
+                          />
+                          <span>to</span>
+                          <input
+                            type="date"
+                            class="px-2 py-1 border border-gray-300 rounded text-sm w-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="border-t border-gray-200 p-2">
+                    <button
+                      class="w-full bg-primary text-white px-3 py-1.5 !rounded-button text-sm whitespace-nowrap"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Popularity Filter -->
+              <div class="relative">
+                <button
+                  id="popularityFilter"
+                  class="bg-white border border-gray-300 text-gray-700 px-4 py-2 !rounded-button flex items-center whitespace-nowrap"
+                >
+                  <div
+                    class="w-5 h-5 flex items-center justify-center mr-2 text-gray-500"
+                  >
+                    <i class="ri-star-line"></i>
+                  </div>
+                  <span>Popularity</span>
+                  <div class="w-5 h-5 flex items-center justify-center ml-2">
+                    <i class="ri-arrow-down-s-line"></i>
+                  </div>
+                </button>
+                <div
+                  id="popularityDropdown"
+                  class="hidden absolute z-10 mt-1 w-48 bg-white border border-gray-300 rounded shadow-lg"
+                >
+                  <div class="p-2">
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="popAll"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="popAll" class="cursor-pointer"
+                        >All Ratings</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="pop4plus"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="pop4plus" class="cursor-pointer"
+                        >4+ Stars</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="pop3plus"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="pop3plus" class="cursor-pointer"
+                        >3+ Stars</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="popTrending"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="popTrending" class="cursor-pointer"
+                        >Trending</label
+                      >
+                    </div>
+                    <div
+                      class="flex items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        id="popFeatured"
+                        class="custom-checkbox mr-2"
+                      />
+                      <label for="popFeatured" class="cursor-pointer"
+                        >Featured</label
+                      >
+                    </div>
+                  </div>
+                  <div class="border-t border-gray-200 p-2">
+                    <button
+                      class="w-full bg-primary text-white px-3 py-1.5 !rounded-button text-sm whitespace-nowrap"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Search Filter -->
+              <div class="relative flex-grow max-w-md">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <div
+                    class="w-5 h-5 flex items-center justify-center text-gray-400"
+                  >
+                    <i class="ri-search-line"></i>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search in pitches..."
+                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                />
+              </div>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="relative">
+              <button
+                id="sortOptions"
+                class="bg-white border border-gray-300 text-gray-700 px-4 py-2 !rounded-button flex items-center whitespace-nowrap"
+              >
+                <span>Sort by: Most Recent</span>
+                <div class="w-5 h-5 flex items-center justify-center ml-2">
+                  <i class="ri-arrow-down-s-line"></i>
+                </div>
+              </button>
+              <div
+                id="sortDropdown"
+                class="hidden absolute right-0 z-10 mt-1 w-48 bg-white border border-gray-300 rounded shadow-lg"
+              >
+                <div class="py-1">
+                  <button
+                    class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Most Recent
+                  </button>
+                  <button
+                    class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Most Popular
+                  </button>
+                  <button
+                    class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Alphabetical (A-Z)
+                  </button>
+                  <button
+                    class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Alphabetical (Z-A)
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+       
+
+      <!-- Footer -->
+      <footer class="bg-gray-50 py-8 mt-16">
+        <div class="container mx-auto px-6">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0">
+              <h3 class="font-['Pacifico'] text-2xl text-gray-800 mb-2">
+                logo
+              </h3>
+              <p class="text-gray-600 text-sm">
+                Your platform for discovering and engaging with innovative
+                ideas.
+              </p>
+            </div>
+            <div class="flex space-x-8">
+              <div>
+                <h4 class="font-semibold text-gray-900 mb-3">Quick Links</h4>
+                <ul class="space-y-2">
+                  <li>
+                    <a href="#" class="text-gray-600 hover:text-primary text-sm"
+                      >About Us</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="text-gray-600 hover:text-primary text-sm"
+                      >How It Works</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="text-gray-600 hover:text-primary text-sm"
+                      >Terms of Service</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="text-gray-600 hover:text-primary text-sm"
+                      >Privacy Policy</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-900 mb-3">Connect</h4>
+                <ul class="space-y-2">
+                  <li>
+                    <a href="#" class="text-gray-600 hover:text-primary text-sm"
+                      >Contact Us</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="text-gray-600 hover:text-primary text-sm"
+                      >Support</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="text-gray-600 hover:text-primary text-sm"
+                      >FAQ</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="text-gray-600 hover:text-primary text-sm"
+                      >Blog</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div
+            class="border-t border-gray-200 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center"
+          >
+            <p class="text-gray-600 text-sm mb-4 md:mb-0">
+              ©️ 2025 Pitch Dashboard. All rights reserved.
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="text-gray-600 hover:text-primary">
+                <div class="w-8 h-8 flex items-center justify-center">
+                  <i class="ri-twitter-x-line ri-lg"></i>
+                </div>
+              </a>
+              <a href="#" class="text-gray-600 hover:text-primary">
+                <div class="w-8 h-8 flex items-center justify-center">
+                  <i class="ri-linkedin-line ri-lg"></i>
+                </div>
+              </a>
+              <a href="#" class="text-gray-600 hover:text-primary">
+                <div class="w-8 h-8 flex items-center justify-center">
+                  <i class="ri-facebook-line ri-lg"></i>
+                </div>
+              </a>
+              <a href="#" class="text-gray-600 hover:text-primary">
+                <div class="w-8 h-8 flex items-center justify-center">
+                  <i class="ri-instagram-line ri-lg"></i>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Category filter dropdown
+        const categoryFilter = document.getElementById("categoryFilter");
+        const categoryDropdown = document.getElementById("categoryDropdown");
+
+        categoryFilter.addEventListener("click", function () {
+          categoryDropdown.classList.toggle("hidden");
+          dateDropdown.classList.add("hidden");
+          popularityDropdown.classList.add("hidden");
+          sortDropdown.classList.add("hidden");
+        });
+
+        // Date filter dropdown
+        const dateFilter = document.getElementById("dateFilter");
+        const dateDropdown = document.getElementById("dateDropdown");
+
+        dateFilter.addEventListener("click", function () {
+          dateDropdown.classList.toggle("hidden");
+          categoryDropdown.classList.add("hidden");
+          popularityDropdown.classList.add("hidden");
+          sortDropdown.classList.add("hidden");
+        });
+
+        // Popularity filter dropdown
+        const popularityFilter = document.getElementById("popularityFilter");
+        const popularityDropdown = document.getElementById("popularityDropdown");
+
+        popularityFilter.addEventListener("click", function () {
+          popularityDropdown.classList.toggle("hidden");
+          categoryDropdown.classList.add("hidden");
+          dateDropdown.classList.add("hidden");
+          sortDropdown.classList.add("hidden");
+        });
+
+        // Sort options dropdown
+        const sortOptions = document.getElementById("sortOptions");
+        const sortDropdown = document.getElementById("sortDropdown");
+
+        sortOptions.addEventListener("click", function () {
+          sortDropdown.classList.toggle("hidden");
+          categoryDropdown.classList.add("hidden");
+          dateDropdown.classList.add("hidden");
+          popularityDropdown.classList.add("hidden");
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener("click", function (event) {
+          if (
+            !event.target.closest("#categoryFilter") &&
+            !event.target.closest("#categoryDropdown")
+          ) {
+            categoryDropdown.classList.add("hidden");
+          }
+          if (
+            !event.target.closest("#dateFilter") &&
+            !event.target.closest("#dateDropdown")
+          ) {
+            dateDropdown.classList.add("hidden");
+          }
+          if (
+            !event.target.closest("#popularityFilter") &&
+            !event.target.closest("#popularityDropdown")
+          ) {
+            popularityDropdown.classList.add("hidden");
+          }
+          if (
+            !event.target.closest("#sortOptions") &&
+            !event.target.closest("#sortDropdown")
+          ) {
+            sortDropdown.classList.add("hidden");
+          }
+        });
+
+        // Sort dropdown functionality
+        const sortButtons = sortDropdown.querySelectorAll("button");
+        sortButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            sortOptions.querySelector("span").textContent =
+              "Sort by: " + this.textContent;
+            sortDropdown.classList.add("hidden");
+          });
+        });
+
+        // Engage buttons functionality
+        const engageButtons = document.querySelectorAll(
+          ".bg-gray-200.hover\\:bg-gray-300.text-gray-700.px-3.py-1\\.5",
+        );
+        engageButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            window.location.href =
+              "https://readdy.ai/home/d90d3948-d723-414d-b599-957eee3d081b/5d9585f9-343b-4c9f-895f-6b283e6b8b1e";
+          });
+        });
+
+        // Custom checkboxes
+        const checkboxes = document.querySelectorAll(".custom-checkbox");
+        checkboxes.forEach((checkbox) => {
+          checkbox.addEventListener("change", function () {
+            if (this.id === "catAll" && this.checked) {
+              document
+                .querySelectorAll("#categoryDropdown .custom-checkbox:not(#catAll)")
+                .forEach((cb) => {
+                  cb.checked = false;
+                });
+            } else if (this.checked && this.closest("#categoryDropdown")) {
+              document.getElementById("catAll").checked = false;
+            }
+          });
+        });
+
+        // Pagination functionality
+        const paginationButtons = document.querySelectorAll(".flex button");
+        paginationButtons.forEach((button) => {
+          if (!button.classList.contains("bg-primary")) {
+            button.addEventListener("click", function () {
+              document.querySelectorAll(".flex button").forEach((btn) => {
+                btn.classList.remove("bg-primary", "text-white");
+                btn.classList.add("text-gray-600", "hover:bg-gray-100");
+              });
+              if (!this.querySelector("i")) {
+                this.classList.remove("text-gray-600", "hover:bg-gray-100");
+                this.classList.add("bg-primary", "text-white");
+              }
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create New Pitch - Step 1 | E-Shark Tank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#3176FF',secondary:'#64748b'},borderRadius:{'none':'0px','sm':'2px',DEFAULT:'4px','md':'8px','lg':'12px','xl':'16px','2xl':'20px','3xl':'24px','full':'9999px','button':'4px'}}}}</script>
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+.rich-text-editor {
+min-height: 150px;
+border: 1px solid #e5e7eb;
+border-radius: 4px;
+padding: 0.5rem;
+}
+.editor-toolbar {
+display: flex;
+border-bottom: 1px solid #e5e7eb;
+padding-bottom: 0.5rem;
+margin-bottom: 0.5rem;
+}
+.editor-toolbar button {
+padding: 0.25rem 0.5rem;
+margin-right: 0.25rem;
+border-radius: 4px;
+}
+.editor-toolbar button:hover {
+background-color: #f3f4f6;
+}
+.custom-range {
+-webkit-appearance: none;
+width: 100%;
+height: 6px;
+background: #e5e7eb;
+border-radius: 5px;
+outline: none;
+}
+.custom-range::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 18px;
+height: 18px;
+background: #3176FF;
+border-radius: 50%;
+cursor: pointer;
+}
+.custom-range::-moz-range-thumb {
+width: 18px;
+height: 18px;
+background: #3176FF;
+border-radius: 50%;
+cursor: pointer;
+}
+.step-indicator {
+position: relative;
+display: flex;
+justify-content: space-between;
+}
+.step-indicator::before {
+content: '';
+position: absolute;
+top: 50%;
+left: 0;
+right: 0;
+height: 2px;
+background: #e5e7eb;
+transform: translateY(-50%);
+z-index: 1;
+}
+.step {
+position: relative;
+z-index: 2;
+background: white;
+padding: 0 8px;
+}
+.step-active .step-number {
+background: #3176FF;
+color: white;
+}
+.step-completed .step-number {
+background: #10b981;
+color: white;
+}
+.step-number {
+width: 32px;
+height: 32px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 50%;
+background: #f3f4f6;
+margin-bottom: 8px;
+}
+.character-count {
+position: absolute;
+bottom: 8px;
+right: 8px;
+font-size: 0.75rem;
+color: #6b7280;
+}
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<!-- Navigation Bar -->
+<header class="bg-white shadow-sm">
+<div class="container mx-auto px-4 py-3 flex items-center justify-between">
+<div class="flex items-center space-x-8">
+<a href="index.html" class="flex items-center">
+<div class="text-2xl font-['Pacifico'] text-primary">logo</div>
+</a>
+<nav class="hidden md:flex space-x-6">
+<a href="index.html" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-home-line"></i>
+</div>
+Home
+</a>
+<a href="dashboard.html" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-dashboard-line"></i>
+</div>
+Dashboard
+</a>
+<a href="pitches.html" class="text-primary font-medium border-b-2 border-primary pb-1 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-presentation-line"></i>
+</div>
+My Pitches
+</a>
+<a href="analytics.html" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-bar-chart-line"></i>
+</div>
+Analytics
+</a>
+<a href="investments.html" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-money-dollar-circle-line"></i>
+</div>
+Investments
+</a>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative hidden md:block w-64">
+<input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 text-sm bg-gray-100 rounded border-none focus:ring-2 focus:ring-primary/20 focus:outline-none">
+<div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-500">
+<i class="ri-search-line"></i>
+</div>
+</div>
+<div class="flex items-center space-x-3">
+<div class="w-5 h-5 flex items-center justify-center text-gray-600">
+<i class="ri-notification-3-line"></i>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+<span class="text-sm font-medium">DA</span>
+</div>
+<a href="#" class="text-gray-800 font-medium flex items-center">
+David Anderson
+<div class="w-4 h-4 flex items-center justify-center ml-1">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</a>
+</div>
+<a href="#" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-logout-box-line"></i>
+</div>
+</a>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="container mx-auto px-4 py-8">
+<div class="max-w-4xl mx-auto">
+<!-- Page Header -->
+<div class="mb-8">
+<h1 class="text-2xl font-bold text-gray-900">Create New Pitch</h1>
+<p class="text-gray-600 mt-1">Complete all required information to create your pitch and attract investors.</p>
+</div>
+<!-- Step Indicator -->
+<div class="step-indicator mb-8">
+<div class="flex flex-col items-center step step-active">
+<div class="step-number">1</div>
+<span class="text-sm font-medium text-primary">Basic Info</span>
+</div>
+<div class="flex flex-col items-center step">
+<div class="step-number">2</div>
+<span class="text-sm font-medium text-gray-500">Financial Details</span>
+</div>
+<div class="flex flex-col items-center step">
+<div class="step-number">3</div>
+<span class="text-sm font-medium text-gray-500">Media & Preview</span>
+</div>
+</div>
+<!-- Form Section -->
+<div class="bg-white p-6 rounded shadow-sm border border-gray-100">
+<form id="pitchForm">
+<div class="space-y-6">
+<!-- Project Title -->
+<div>
+<label for="projectTitle" class="block text-sm font-medium text-gray-700 mb-1">Project Title</label>
+<input type="text" id="projectTitle" name="projectTitle" class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary" placeholder="Enter your project title">
+</div>
+<!-- Category -->
+<div>
+<label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+<div class="relative">
+<select id="category" name="category" class="w-full px-4 py-2 border border-gray-300 rounded appearance-none focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary pr-8">
+<option value="" disabled selected>Select a category</option>
+<option value="technology">Technology</option>
+<option value="ecommerce">E-commerce</option>
+<option value="education">Education</option>
+<option value="healthcare">Healthcare</option>
+<option value="finance">Finance</option>
+<option value="food">Food & Beverage</option>
+<option value="retail">Retail</option>
+<option value="manufacturing">Manufacturing</option>
+<option value="agriculture">Agriculture</option>
+<option value="energy">Energy</option>
+<option value="other">Other</option>
+</select>
+<div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none w-4 h-4 flex items-center justify-center text-gray-500">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+</div>
+<!-- Brief Description -->
+<div class="relative">
+<label for="briefDescription" class="block text-sm font-medium text-gray-700 mb-1">Brief Description (max 200 characters)</label>
+<textarea id="briefDescription" name="briefDescription" rows="3" maxlength="200" class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary" placeholder="Provide a brief description of your project"></textarea>
+<div class="character-count"><span id="charCount">0</span>/200</div>
+</div>
+<!-- Detailed Description -->
+<div>
+<label for="detailedDescription" class="block text-sm font-medium text-gray-700 mb-1">Detailed Description</label>
+<div class="rich-text-editor">
+<div class="editor-toolbar">
+<button type="button" class="font-bold">B</button>
+<button type="button" class="italic">I</button>
+<button type="button" class="underline">U</button>
+<button type="button" class="flex items-center">
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-list-check"></i>
+</div>
+</button>
+<button type="button" class="flex items-center">
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-list-ordered"></i>
+</div>
+</button>
+<button type="button" class="flex items-center">
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-link"></i>
+</div>
+</button>
+</div>
+<div id="detailedDescription" contenteditable="true" class="outline-none min-h-[120px]" placeholder="Provide detailed information about your project, including its unique selling points, target market, and competitive advantages."></div>
+</div>
+</div>
+</div>
+<!-- Form Navigation -->
+<div class="flex justify-between mt-8">
+<button type="button" id="saveDraft" class="px-4 py-2 border border-gray-300 rounded-button text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+<div class="flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-2">
+<i class="ri-save-line"></i>
+</div>
+Save as Draft
+</div>
+</button>
+<a href="https://readdy.ai/home/50b161c3-e2cf-421d-a3c7-4231a80fa1e7/d7a8beb3-680f-4d37-af03-2a4352987292" data-readdy="true" class="px-4 py-2 bg-primary text-white rounded-button hover:bg-primary/90 whitespace-nowrap inline-block">
+<div class="flex items-center">
+Next Step
+<div class="w-5 h-5 flex items-center justify-center ml-2">
+<i class="ri-arrow-right-line"></i>
+</div>
+</div>
+</a>
+</div>
+</form>
+</div>
+</div>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+const briefDescription = document.getElementById('briefDescription');
+const charCount = document.getElementById('charCount');
+briefDescription.addEventListener('input', function() {
+const currentLength = this.value.length;
+charCount.textContent = currentLength;
+if (currentLength >= 200) {
+charCount.classList.add('text-red-500');
+} else {
+charCount.classList.remove('text-red-500');
+}
+});
+});
+document.addEventListener('DOMContentLoaded', function() {
+const nextStepLink = document.querySelector('[data-readdy="true"]');
+nextStepLink.addEventListener('click', function(e) {
+// Validate form fields
+const projectTitle = document.getElementById('projectTitle').value;
+const category = document.getElementById('category').value;
+const briefDescription = document.getElementById('briefDescription').value;
+if (!projectTitle || !category || !briefDescription) {
+e.preventDefault();
+const errorDiv = document.createElement('div');
+errorDiv.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded';
+errorDiv.innerHTML = 'Please fill in all required fields before proceeding.';
+document.body.appendChild(errorDiv);
+setTimeout(() => errorDiv.remove(), 3000);
+}
+});
+const saveDraftButton = document.getElementById('saveDraft');
+saveDraftButton.addEventListener('click', function() {
+// Save form data to localStorage or send to server
+alert('Your pitch has been saved as a draft.');
+});
+});
+</script>
+</body>
+</html>

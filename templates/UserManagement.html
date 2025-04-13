@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 5px;
+        }
+
+        .btn-verify {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-verify:hover {
+            background: #218838;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+        }
+
+        .btn-back {
+            margin-top: 20px;
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+        }
+
+        .btn-back:hover {
+            background: #5a6268;
+        }
+    </style>
+    <script>
+        // Simulating API response (List of Lists)
+        let pendingUsers = [
+            [1, "John Doe", "Pitcher"],
+            [2, "Sarah Smith", "Investor"],
+        ];
+
+        function loadUsers() {
+            let tableBody = document.getElementById("userTableBody");
+            tableBody.innerHTML = "";  // Clear previous data
+
+            pendingUsers.forEach((user, index) => {
+                let row = `<tr>
+                    <td>${user[0]}</td>
+                    <td>${user[1]}</td>
+                    <td>${user[2]}</td>
+                    <td>
+                        <button class="btn btn-verify" onclick="verifyUser(${index})">Verify</button>
+                        <button class="btn btn-reject" onclick="rejectUser(${index})">Reject</button>
+                    </td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function verifyUser(index) {
+            pendingUsers.splice(index, 1); // Remove user from list
+            loadUsers(); // Refresh table
+        }
+
+        function rejectUser(index) {
+            pendingUsers.splice(index, 1); // Remove user from list
+            loadUsers(); // Refresh table
+        }
+        window.onload = loadUsers;  // Load users when page loads
+    </script>
+</head>
+<body>
+
+    <h2>Pending User Verifications</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- Users will be loaded here dynamically -->
+        </tbody>
+    </table>
+    <a href="Admin.html">
+    <button>⬅ Back to Dashboard</button>
+    </a>
+</body>
+</html>

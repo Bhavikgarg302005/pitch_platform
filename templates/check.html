@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audience Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+font-family: 'Roboto', sans-serif;
+background-color: #ffffff;
+}
+h1, h2, h3, h4, h5, h6 {
+font-family: 'Inter', sans-serif;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+input[type="number"] {
+-moz-appearance: textfield;
+}
+.custom-checkbox {
+appearance: none;
+width: 20px;
+height: 20px;
+border: 2px solid #d1d5db;
+border-radius: 4px;
+position: relative;
+cursor: pointer;
+transition: all 0.2s;
+}
+.custom-checkbox:checked {
+background-color: #4F46E5;
+border-color: #4F46E5;
+}
+.custom-checkbox:checked::after {
+content: '';
+position: absolute;
+left: 6px;
+top: 2px;
+width: 6px;
+height: 10px;
+border: solid white;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
+}
+.custom-switch {
+position: relative;
+display: inline-block;
+width: 44px;
+height: 24px;
+}
+.custom-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.switch-slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #e5e7eb;
+transition: .4s;
+border-radius: 24px;
+}
+.switch-slider:before {
+position: absolute;
+content: "";
+height: 18px;
+width: 18px;
+left: 3px;
+bottom: 3px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+input:checked + .switch-slider {
+background-color: #4F46E5;
+}
+input:checked + .switch-slider:before {
+transform: translateX(20px);
+}
+.custom-range {
+-webkit-appearance: none;
+width: 100%;
+height: 6px;
+border-radius: 5px;
+background: #e5e7eb;
+outline: none;
+}
+.custom-range::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 18px;
+height: 18px;
+border-radius: 50%;
+background: #4F46E5;
+cursor: pointer;
+}
+.custom-range::-moz-range-thumb {
+width: 18px;
+height: 18px;
+border-radius: 50%;
+background: #4F46E5;
+cursor: pointer;
+border: none;
+}
+</style>
+</head>
+<body class="min-h-screen">
+<div class="min-w-[1024px]">
+<!-- Header -->
+<header class="bg-white shadow-sm py-4 px-6 flex items-center justify-between">
+<div class="flex items-center">
+<a href="#" class="text-gray-800 font-medium flex items-center">
+<div class="w-10 h-10 flex items-center justify-center mr-2">
+<i class="ri-home-line ri-lg"></i>
+</div>
+<span>Home</span>
+</a>
+</div>
+<div class="w-2/5 relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<div class="w-5 h-5 flex items-center justify-center text-gray-400">
+<i class="ri-search-line"></i>
+</div>
+</div>
+<input type="text" placeholder="Search for pitches..." class="w-full pl-10 pr-4 py-2 border-none bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+</div>
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button flex items-center whitespace-nowrap">
+<div class="w-5 h-5 flex items-center justify-center mr-2">
+<i class="ri-logout-box-line"></i>
+</div>
+<a href="login.html">
+Logout
+</a>
+</button>
+</header>
+<!-- Main Content -->
+<main class="container mx-auto px-6 py-8">
+<div class="mb-12">
+<h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome to E-shark Tank</h1>
+<p class="text-gray-600">Fuel your curiosity — browse pitches, spot rising stars, and shape your identity.</p>
+</div>
+<!-- Navigation Cards -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Card 1 -->
+<div class="bg-gray-50 rounded shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col items-center text-center">
+<div class="w-16 h-16 flex items-center justify-center bg-blue-50 rounded-full mb-4 text-primary">
+<i class="ri-exchange-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-2">Change Portfolio to Pitcher</h3>
+<p class="text-gray-600 mb-4">Switch your account to pitch your own ideas</p>
+<button class="mt-auto bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">Get Started</button>
+</div>
+<!-- Card 2 -->
+<div class="bg-gray-50 rounded shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col items-center text-center">
+<div class="w-16 h-16 flex items-center justify-center bg-green-50 rounded-full mb-4 text-green-600">
+<i class="ri-line-chart-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-2">Trending Ideas</h3>
+<p class="text-gray-600 mb-4">Discover popular pitches and trending concepts</p>
+<button class="mt-auto bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">Explore</button>
+</div>
+<!-- Card 3 -->
+<div class="bg-gray-50 rounded shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col items-center text-center">
+<div class="w-16 h-16 flex items-center justify-center bg-purple-50 rounded-full mb-4 text-purple-600">
+<i class="ri-user-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-2">Profile</h3>
+<p class="text-gray-600 mb-4">Manage your personal information and settings</p>
+<button class="mt-auto bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">View Profile</button>
+</div>
+<!-- Card 4 -->
+<div class="bg-gray-50 rounded shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col items-center text-center">
+<div class="w-16 h-16 flex items-center justify-center bg-amber-50 rounded-full mb-4 text-amber-600">
+<i class="ri-question-answer-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-2">Help & Feedback</h3>
+<p class="text-gray-600 mb-4">Get support or share your thoughts with us</p>
+<button class="mt-auto bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">Contact Us</button>
+</div>
+</div>
+<!-- Recent Pitches -->
+<div>
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-2xl font-bold text-gray-900">Recent Pitches</h2>
+<a href="file2.html" data-readdy="true" class="text-primary hover:text-primary/80 font-medium flex items-center">
+View All
+<div class="w-5 h-5 flex items-center justify-center ml-1">
+<i class="ri-arrow-right-line"></i>
+</div>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Pitch Card 1 -->
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=modern%20tech%20startup%20presentation%20with%20clean%20minimalist%20design%2C%20business%20pitch%20concept%2C%20professional%20setting%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=1&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-blue-50 text-blue-700 px-2 py-1 rounded-full">Technology</span>
+<span class="ml-2 text-xs text-gray-500">April 10, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Smart Home Security System</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Next-generation home security with AI-powered threat detection and seamless smart device integration.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">David Anderson</span>
+</div>
+<button onclick="showPitchDetail(this)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+</div>
+<!-- Pitch Card 2 -->
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=sustainable%20eco-friendly%20product%20packaging%2C%20green%20business%20concept%2C%20environmental%20friendly%20materials%2C%20clean%20modern%20design%2C%20high%20quality&width=400&height=200&seq=2&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-purple-50 text-purple-700 px-2 py-1 rounded-full">E-commerce</span>
+<span class="ml-2 text-xs text-gray-500">April 9, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Social Shopping Platform</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Revolutionary social commerce platform combining live streaming, AR try-ons, and community-driven recommendations.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Jennifer Zhang</span>
+</div>
+<button onclick="showPitchDetail(this)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+</div>
+<!-- Pitch Card 3 -->
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=education%20technology%20platform%20interface%2C%20gamified%20learning%20experience%2C%20interactive%20educational%20content%2C%20clean%20modern%20design%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=3&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">Education</span>
+<span class="ml-2 text-xs text-gray-500">April 8, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Gamified Learning Platform</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Interactive educational platform using game mechanics and AI to create personalized learning experiences for K-12 students.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Sarah Martinez</span>
+</div>
+<button onclick="showPitchDetail(this)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+</div>
+<!-- Pitch Card 4 -->
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=sustainable%20urban%20farming%20system%2C%20vertical%20garden%20technology%2C%20smart%20agriculture%20solution%2C%20clean%20modern%20design%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=4&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-green-50 text-green-700 px-2 py-1 rounded-full">Agriculture</span>
+<span class="ml-2 text-xs text-gray-500">April 7, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Urban Vertical Farming System</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Smart vertical farming solution for urban environments, using IoT sensors and automation to maximize crop yields in minimal space.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Marcus Green</span>
+</div>
+<button onclick="showPitchDetail(this)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-gray-50 py-8 mt-16">
+<div class="container mx-auto px-6">
+<div class="flex flex-col md:flex-row justify-between items-center">
+<div class="mb-6 md:mb-0">
+<h3 class="font-['Pacifico'] text-2xl text-gray-800 mb-2">logo</h3>
+<p class="text-gray-600 text-sm">Your platform for discovering and engaging with innovative ideas.</p>
+</div>
+<div class="flex space-x-8">
+<div>
+<h4 class="font-semibold text-gray-900 mb-3">Quick Links</h4>
+<ul class="space-y-2">
+<li><a href="#" class="text-gray-600 hover:text-primary text-sm">About Us</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary text-sm">How It Works</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary text-sm">Terms of Service</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary text-sm">Privacy Policy</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-semibold text-gray-900 mb-3">Connect</h4>
+<ul class="space-y-2">
+<li><a href="#" class="text-gray-600 hover:text-primary text-sm">Contact Us</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary text-sm">Support</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary text-sm">FAQ</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary text-sm">Blog</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="border-t border-gray-200 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+<p class="text-gray-600 text-sm mb-4 md:mb-0">©️ 2025 Pitch Dashboard. All rights reserved.</p>
+<div class="flex space-x-4">
+<a href="#" class="text-gray-600 hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-twitter-x-line ri-lg"></i>
+</div>
+</a>
+<a href="#" class="text-gray-600 hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-linkedin-line ri-lg"></i>
+</div>
+</a>
+<a href="#" class="text-gray-600 hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-facebook-line ri-lg"></i>
+</div>
+</a>
+<a href="#" class="text-gray-600 hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-instagram-line ri-lg"></i>
+</div>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<script>
+function showPitchDetail(button) {
+const pitchCard = button.closest('.bg-white');
+const title = pitchCard.querySelector('h3').textContent;
+const category = pitchCard.querySelector('.rounded-full').textContent;
+const date = pitchCard.querySelector('.text-gray-500').textContent;
+const description = pitchCard.querySelector('.line-clamp-2').textContent;
+const author = pitchCard.querySelector('.text-gray-700').textContent;
+const image = pitchCard.querySelector('img').src;
+document.querySelector('main').innerHTML = `
+<div class="flex items-center mb-8">
+<a href="#" onclick="location.reload()" class="text-gray-800 font-medium flex items-center">
+<div class="w-10 h-10 flex items-center justify-center mr-2">
+<i class="ri-arrow-left-line ri-lg"></i>
+</div>
+<span>Back to Pitches</span>
+</a>
+</div>
+<div class="max-w-4xl mx-auto">
+<div class="bg-white rounded shadow-sm overflow-hidden">
+<div class="h-[400px] bg-gray-100 relative">
+<img src="${image}" alt="Pitch Image" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-8">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center space-x-4">
+<span class="text-sm font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full">${category}</span>
+<span class="text-sm text-gray-500">${date}</span>
+</div>
+<div class="flex items-center space-x-2">
+<button id="likeButton" class="flex items-center space-x-1 text-gray-500 hover:text-primary transition-colors">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-heart-line ri-lg"></i>
+</div>
+<span class="font-medium">124</span>
+</button>
+</div>
+</div>
+<h1 class="text-3xl font-bold text-gray-900 mb-4">${title}</h1>
+<div class="flex items-center mb-6">
+<div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-4">
+<i class="ri-user-line ri-lg"></i>
+</div>
+<div>
+<p class="font-medium text-gray-900">${author}</p>
+<p class="text-sm text-gray-500">Pitcher</p>
+</div>
+</div>
+<div class="prose max-w-none mb-8">
+<p class="text-gray-600">${description}</p>
+<h2 class="text-xl font-semibold text-gray-900 mt-6 mb-4">Problem Statement</h2>
+<p class="text-gray-600">Current solutions in the market lack the sophistication and user-centric approach needed to effectively address customer service challenges. Many businesses struggle with high response times, inconsistent service quality, and inability to scale their support operations efficiently.</p>
+<h2 class="text-xl font-semibold text-gray-900 mt-6 mb-4">Proposed Solution</h2>
+<p class="text-gray-600">Our AI-powered platform leverages advanced natural language processing and machine learning algorithms to:</p>
+<ul class="list-disc pl-6 mt-4 space-y-2 text-gray-600">
+<li>Automatically categorize and prioritize customer inquiries</li>
+<li>Provide intelligent response suggestions based on historical data</li>
+<li>Monitor customer sentiment in real-time</li>
+<li>Scale support operations without compromising quality</li>
+</ul>
+<h2 class="text-xl font-semibold text-gray-900 mt-6 mb-4">Market Opportunity</h2>
+<p class="text-gray-600">The global customer service software market is expected to reach $20 billion by 2027, growing at a CAGR of 15.6%. Our solution targets small to medium-sized enterprises looking to improve their customer service operations while optimizing costs.</p>
+</div>
+<div class="border-t border-gray-200 pt-8 mb-8">
+<h2 class="text-xl font-semibold text-gray-900 mb-6">Comments (8)</h2>
+<div class="space-y-6">
+<div class="flex space-x-4">
+<div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 flex-shrink-0">
+<i class="ri-user-line"></i>
+</div>
+<div class="flex-1">
+<textarea placeholder="Add a comment..." class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+<div class="flex justify-end mt-2">
+<button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 !rounded-button whitespace-nowrap">Post Comment</button>
+</div>
+</div>
+</div>
+<div class="flex space-x-4">
+<div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 flex-shrink-0">
+<i class="ri-user-line"></i>
+</div>
+<div>
+<div class="flex items-center mb-1">
+<span class="font-medium text-gray-900 mr-2">Sarah Chen</span>
+<span class="text-sm text-gray-500">2 hours ago</span>
+</div>
+<p class="text-gray-600 mb-2">This is exactly what the market needs right now. Have you considered integrating with existing CRM systems?</p>
+<div class="flex items-center space-x-4 text-sm">
+<button class="text-gray-500 hover:text-primary">Reply</button>
+<button class="text-gray-500 hover:text-primary flex items-center">
+<div class="w-4 h-4 flex items-center justify-center mr-1">
+<i class="ri-heart-line"></i>
+</div>
+<span>12</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex space-x-4">
+<div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 flex-shrink-0">
+<i class="ri-user-line"></i>
+</div>
+<div>
+<div class="flex items-center mb-1">
+<span class="font-medium text-gray-900 mr-2">Michael Park</span>
+<span class="text-sm text-gray-500">5 hours ago</span>
+</div>
+<p class="text-gray-600 mb-2">Impressive solution! Would love to see a demo of how the sentiment analysis works in real-time.</p>
+<div class="flex items-center space-x-4 text-sm">
+<button class="text-gray-500 hover:text-primary">Reply</button>
+<button class="text-gray-500 hover:text-primary flex items-center">
+<div class="w-4 h-4 flex items-center justify-center mr-1">
+<i class="ri-heart-line"></i>
+</div>
+<span>8</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<button class="text-primary hover:text-primary/80 font-medium flex items-center mt-6">
+View All Comments
+<div class="w-5 h-5 flex items-center justify-center ml-1">
+<i class="ri-arrow-right-line"></i>
+</div>
+</button>
+</div>
+</div>
+</div>
+</div>
+`;
+// Initialize like button functionality
+const likeButton = document.getElementById('likeButton');
+likeButton.addEventListener('click', function() {
+const icon = this.querySelector('i');
+if (icon.classList.contains('ri-heart-line')) {
+icon.classList.replace('ri-heart-line', 'ri-heart-fill');
+this.classList.replace('text-gray-500', 'text-red-500');
+this.querySelector('span').textContent = '125';
+} else {
+icon.classList.replace('ri-heart-fill', 'ri-heart-line');
+this.classList.replace('text-red-500', 'text-gray-500');
+this.querySelector('span').textContent = '124';
+}
+});
+}
+document.addEventListener('DOMContentLoaded', function() {
+// Navigation functionality
+const navButtons = document.querySelectorAll('.grid.grid-cols-2 button');
+navButtons[0].addEventListener('click', function() {
+window.location.href = '#change-portfolio';
+showChangePage();
+});
+navButtons[1].addEventListener('click', function() {
+window.location.href = '#trending-ideas';
+showTrendingPage();
+});
+navButtons[2].addEventListener('click', function() {
+window.location.href = '#profile';
+showProfilePage();
+});
+navButtons[3].addEventListener('click', function() {
+window.location.href = '#help-feedback';
+showHelpPage();
+});
+});
+function showChangePage() {
+document.querySelector('main').innerHTML = `
+<div class="flex items-center mb-8">
+<a href="#" onclick="location.reload()" class="text-gray-800 font-medium flex items-center">
+<div class="w-10 h-10 flex items-center justify-center mr-2">
+<i class="ri-arrow-left-line ri-lg"></i>
+</div>
+<span>Back to Home</span>
+</a>
+</div>
+<div class="max-w-2xl mx-auto">
+<h1 class="text-3xl font-bold text-gray-900 mb-6">Change Portfolio to Pitcher</h1>
+<p class="text-gray-600 mb-8">Complete the form below to switch your account from an audience member to a pitcher. This will allow you to submit your own ideas and pitches.</p>
+<form class="bg-white rounded shadow-sm p-8">
+<div class="mb-6">
+<label for="fullName" class="block text-gray-700 font-medium mb-2">Full Name</label>
+<input type="text" id="fullName" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
+</div>
+<div class="mb-6">
+<label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+<input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
+</div>
+<div class="mb-6">
+<label for="phone" class="block text-gray-700 font-medium mb-2">Phone Number</label>
+<input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
+</div>
+<div class="mb-6">
+<label for="domains" class="block text-gray-700 font-medium mb-2">Domains Interested</label>
+<div class="relative">
+<button type="button" id="domainsButton" class="w-full px-4 py-2 bg-white border border-gray-300 rounded text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-primary">
+<span>Select domains</span>
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</button>
+<div id="domainsDropdown" class="hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg">
+<div class="p-2 max-h-60 overflow-y-auto">
+<div class="flex items-center p-2 hover:bg-gray-100 rounded">
+<input type="checkbox" id="tech" class="custom-checkbox mr-2">
+<label for="tech" class="cursor-pointer">Technology</label>
+</div>
+<div class="flex items-center p-2 hover:bg-gray-100 rounded">
+<input type="checkbox" id="health" class="custom-checkbox mr-2">
+<label for="health" class="cursor-pointer">Healthcare</label>
+</div>
+<div class="flex items-center p-2 hover:bg-gray-100 rounded">
+<input type="checkbox" id="finance" class="custom-checkbox mr-2">
+<label for="finance" class="cursor-pointer">Finance</label>
+</div>
+<div class="flex items-center p-2 hover:bg-gray-100 rounded">
+<input type="checkbox" id="education" class="custom-checkbox mr-2">
+<label for="education" class="cursor-pointer">Education</label>
+</div>
+<div class="flex items-center p-2 hover:bg-gray-100 rounded">
+<input type="checkbox" id="sustainability" class="custom-checkbox mr-2">
+<label for="sustainability" class="cursor-pointer">Sustainability</label>
+</div>
+<div class="flex items-center p-2 hover:bg-gray-100 rounded">
+<input type="checkbox" id="retail" class="custom-checkbox mr-2">
+<label for="retail" class="cursor-pointer">Retail</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<label for="description" class="block text-gray-700 font-medium mb-2">Description/Intent</label>
+<textarea id="description" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Describe your background and why you want to become a pitcher..."></textarea>
+</div>
+<div class="mb-8">
+<label class="block text-gray-700 font-medium mb-2">Verification Documents</label>
+<div class="border-2 border-dashed border-gray-300 rounded p-6 text-center">
+<div class="w-12 h-12 mx-auto flex items-center justify-center bg-gray-100 rounded-full mb-4 text-gray-400">
+<i class="ri-upload-cloud-line ri-2x"></i>
+</div>
+<p class="text-gray-600 mb-2">Drag and drop files here, or click to browse</p>
+<p class="text-gray-500 text-sm">Accepted formats: PDF, JPG, PNG (Max 10MB)</p>
+<input type="file" class="hidden" id="fileUpload" multiple>
+<button type="button" onclick="document.getElementById('fileUpload').click()" class="mt-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">Browse Files</button>
+</div>
+</div>
+<button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 !rounded-button whitespace-nowrap">Submit Application</button>
+</form>
+</div>
+`;
+// Initialize domains dropdown
+document.getElementById('domainsButton').addEventListener('click', function() {
+const dropdown = document.getElementById('domainsDropdown');
+dropdown.classList.toggle('hidden');
+});
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+const dropdown = document.getElementById('domainsDropdown');
+const button = document.getElementById('domainsButton');
+if (!dropdown || !button) return;
+if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+dropdown.classList.add('hidden');
+}
+});
+}
+function showTrendingPage() {
+document.querySelector('main').innerHTML = `
+<div class="flex items-center mb-8">
+<a href="#" onclick="location.reload()" class="text-gray-800 font-medium flex items-center">
+<div class="w-10 h-10 flex items-center justify-center mr-2">
+<i class="ri-arrow-left-line ri-lg"></i>
+</div>
+<span>Back to Home</span>
+</a>
+</div>
+<div>
+<h1 class="text-3xl font-bold text-gray-900 mb-2">Trending Ideas</h1>
+<p class="text-gray-600 mb-8">Discover the most popular pitches currently gaining traction.</p>
+<div class="flex justify-between items-center mb-6">
+<div class="flex space-x-2">
+<button class="bg-primary text-white px-4 py-2 !rounded-button whitespace-nowrap">All Categories</button>
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">Technology</button>
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">Healthcare</button>
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">Finance</button>
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">More</button>
+</div>
+<div class="relative">
+<button type="button" id="sortButton" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 !rounded-button flex items-center whitespace-nowrap">
+<span>Sort by: Popularity</span>
+<div class="w-5 h-5 flex items-center justify-center ml-2">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</button>
+<div id="sortDropdown" class="hidden absolute right-0 z-10 mt-1 w-48 bg-white border border-gray-300 rounded shadow-lg">
+<div class="py-1">
+<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Popularity</a>
+<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Date (Newest)</a>
+<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Date (Oldest)</a>
+<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Domain</a>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Pitch Card 1 -->
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=modern%20tech%20startup%20presentation%20with%20clean%20minimalist%20design%2C%20business%20pitch%20concept%2C%20professional%20setting%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=5&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+<div class="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+#1 Trending
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-blue-50 text-blue-700 px-2 py-1 rounded-full">Technology</span>
+<span class="ml-2 text-xs text-gray-500">April 10, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">AI-Powered Customer Service Platform</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Revolutionizing customer support with advanced machine learning algorithms that understand context and emotion.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">James Wilson</span>
+</div>
+<div class="flex items-center text-amber-500">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-star-fill"></i>
+</div>
+<span class="font-medium">4.9</span>
+</div>
+</div>
+<button onclick="showPitchDetail(this)" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+<!-- Pitch Card 2 -->
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=sustainable%20eco-friendly%20product%20packaging%2C%20green%20business%20concept%2C%20environmental%20friendly%20materials%2C%20clean%20modern%20design%2C%20high%20quality&width=400&height=200&seq=6&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+<div class="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+#2 Trending
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-green-50 text-green-700 px-2 py-1 rounded-full">Sustainability</span>
+<span class="ml-2 text-xs text-gray-500">April 8, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Biodegradable Packaging Solutions</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Innovative packaging materials made from agricultural waste that decompose within 30 days after disposal.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Emily Rodriguez</span>
+</div>
+<div class="flex items-center text-amber-500">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-star-fill"></i>
+</div>
+<span class="font-medium">4.8</span>
+</div>
+</div>
+<button onclick="showPitchDetail(this)" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+<!-- Pitch Card 3 -->
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=healthcare%20mobile%20application%20interface%2C%20medical%20technology%20concept%2C%20telehealth%20solution%2C%20clean%20professional%20design%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=7&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+<div class="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+#3 Trending
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-red-50 text-red-700 px-2 py-1 rounded-full">Healthcare</span>
+<span class="ml-2 text-xs text-gray-500">April 5, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Remote Patient Monitoring System</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Wearable technology that tracks vital signs and alerts healthcare providers to potential issues before they become emergencies.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Dr. Michael Chen</span>
+</div>
+<div class="flex items-center text-amber-500">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-star-fill"></i>
+</div>
+<span class="font-medium">4.7</span>
+</div>
+</div>
+<button onclick="showPitchDetail(this)" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+<!-- Pitch Card 4 -->
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=financial%20technology%20dashboard%2C%20fintech%20investment%20platform%2C%20modern%20wealth%20management%20interface%2C%20clean%20professional%20design%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=8&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+<div class="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+#4 Trending
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-purple-50 text-purple-700 px-2 py-1 rounded-full">Fintech</span>
+<span class="ml-2 text-xs text-gray-500">April 3, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Micro-Investment Platform for Gen Z</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">App that rounds up everyday purchases and invests the spare change in customized portfolios aligned with users' values and goals.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Sophia Patel</span>
+</div>
+<div class="flex items-center text-amber-500">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-star-fill"></i>
+</div>
+<span class="font-medium">4.6</span>
+</div>
+</div>
+<button onclick="showPitchDetail(this)" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+<!-- More pitch cards (5-8) -->
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=education%20technology%20platform%2C%20e-learning%20interface%2C%20online%20education%20concept%2C%20clean%20modern%20design%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=9&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+<div class="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+#5 Trending
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">Education</span>
+<span class="ml-2 text-xs text-gray-500">April 1, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Personalized Learning Platform</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">AI-driven education platform that adapts to individual learning styles and pace, focusing on practical skills development.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Robert Johnson</span>
+</div>
+<div class="flex items-center text-amber-500">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-star-fill"></i>
+</div>
+<span class="font-medium">4.5</span>
+</div>
+</div>
+<button onclick="showPitchDetail(this)" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+<div class="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 mt-6">
+<a href="#" class="text-primary hover:text-primary/80 font-medium flex items-center justify-end">
+View All
+<div class="w-5 h-5 flex items-center justify-center ml-1">
+<i class="ri-arrow-right-line"></i>
+</div>
+</a>
+</div>
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=smart%20home%20automation%20system%2C%20internet%20of%20things%20concept%2C%20connected%20devices%20interface%2C%20clean%20modern%20design%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=10&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+<div class="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+#6 Trending
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-blue-50 text-blue-700 px-2 py-1 rounded-full">Technology</span>
+<span class="ml-2 text-xs text-gray-500">March 30, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Smart Home Energy Management</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Integrated system that optimizes home energy usage through AI predictions and automated adjustments based on usage patterns.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Thomas Wright</span>
+</div>
+<div class="flex items-center text-amber-500">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-star-fill"></i>
+</div>
+<span class="font-medium">4.4</span>
+</div>
+</div>
+<button onclick="showPitchDetail(this)" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+<div class="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 mt-6">
+<a href="#" class="text-primary hover:text-primary/80 font-medium flex items-center justify-end">
+View All
+<div class="w-5 h-5 flex items-center justify-center ml-1">
+<i class="ri-arrow-right-line"></i>
+</div>
+</a>
+</div>
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=food%20delivery%20service%20app%2C%20restaurant%20marketplace%20platform%2C%20meal%20ordering%20system%2C%20clean%20modern%20design%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=11&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+<div class="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+#7 Trending
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-orange-50 text-orange-700 px-2 py-1 rounded-full">Food Tech</span>
+<span class="ml-2 text-xs text-gray-500">March 28, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Local Restaurant Collective</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Platform connecting local restaurants for shared delivery services, reducing costs and environmental impact while improving customer experience.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Maria Garcia</span>
+</div>
+<div class="flex items-center text-amber-500">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-star-fill"></i>
+</div>
+<span class="font-medium">4.3</span>
+</div>
+</div>
+<button onclick="showPitchDetail(this)" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+<div class="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 mt-6">
+<a href="#" class="text-primary hover:text-primary/80 font-medium flex items-center justify-end">
+View All
+<div class="w-5 h-5 flex items-center justify-center ml-1">
+<i class="ri-arrow-right-line"></i>
+</div>
+</a>
+</div>
+<div class="bg-white rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100">
+<div class="h-40 bg-gray-100 relative">
+<img src="https://readdy.ai/api/search-image?query=mental%20health%20wellness%20app%2C%20psychology%20support%20platform%2C%20digital%20therapy%20concept%2C%20clean%20modern%20design%2C%20light%20background%2C%20high%20quality&width=400&height=200&seq=12&orientation=landscape" alt="Pitch Image" class="w-full h-full object-cover object-top">
+<div class="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+#8 Trending
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center mb-2">
+<span class="text-xs font-medium bg-red-50 text-red-700 px-2 py-1 rounded-full">Healthcare</span>
+<span class="ml-2 text-xs text-gray-500">March 25, 2025</span>
+</div>
+<h3 class="text-lg font-semibold mb-2 text-gray-900">Mental Wellness Platform</h3>
+<p class="text-gray-600 text-sm mb-4 line-clamp-2">Comprehensive mental health support combining AI chatbots, professional therapists, and peer community in one accessible platform.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
+<i class="ri-user-line"></i>
+</div>
+<span class="text-sm text-gray-700">Dr. Sarah Kim</span>
+</div>
+<div class="flex items-center text-amber-500">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-star-fill"></i>
+</div>
+<span class="font-medium">4.2</span>
+</div>
+</div>
+<button onclick="showPitchDetail(this)" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 text-sm !rounded-button whitespace-nowrap">Engage</button>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-center">
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 !rounded-button whitespace-nowrap flex items-center">
+<span>Load More</span>
+<div class="w-5 h-5 flex items-center justify-center ml-2">
+<i class="ri-arrow-down-line"></i>
+</div>
+</button>
+</div>
+</div>
+`;
+// Initialize sort dropdown
+document.getElementById('sortButton').addEventListener('click', function() {
+const dropdown = document.getElementById('sortDropdown');
+dropdown.classList.toggle('hidden');
+});
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+const dropdown = document.getElementById('sortDropdown');
+const button = document.getElementById('sortButton');
+if (!dropdown || !button) return;
+if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+dropdown.classList.add('hidden');
+}
+});
+}
+function showProfilePage() {
+document.querySelector('main').innerHTML = `
+<div class="flex items-center mb-8">
+<a href="#" onclick="location.reload()" class="text-gray-800 font-medium flex items-center">
+<div class="w-10 h-10 flex items-center justify-center mr-2">
+<i class="ri-arrow-left-line ri-lg"></i>
+</div>
+<span>Back to Home</span>
+</a>
+</div>
+<div class="max-w-4xl mx-auto">
+<h1 class="text-3xl font-bold text-gray-900 mb-6">Your Profile</h1>
+<div class="bg-white rounded shadow-sm p-8 mb-8">
+<div class="flex flex-col md:flex-row items-start">
+<div class="mb-6 md:mb-0 md:mr-8 flex flex-col items-center">
+<div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center text-gray-400 mb-4">
+<i class="ri-user-line ri-3x"></i>
+</div>
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">Change Photo</button>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xl font-semibold text-gray-900">Personal Information</h2>
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-2">
+<i class="ri-edit-line"></i>
+</div>
+Edit Profile
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<p class="text-gray-500 text-sm mb-1">Full Name</p>
+<p class="text-gray-900 font-medium">Alexander Thompson</p>
+</div>
+<div>
+<p class="text-gray-500 text-sm mb-1">Email Address</p>
+<p class="text-gray-900 font-medium">alex.thompson@example.com</p>
+</div>
+<div>
+<p class="text-gray-500 text-sm mb-1">Phone Number</p>
+<p class="text-gray-900 font-medium">+1 (555) 123-4567</p>
+</div>
+<div>
+<p class="text-gray-500 text-sm mb-1">Date of Birth</p>
+<p class="text-gray-900 font-medium">June 15, 1988</p>
+</div>
+<div>
+<p class="text-gray-500 text-sm mb-1">Gender</p>
+<p class="text-gray-900 font-medium">Male</p>
+</div>
+<div>
+<p class="text-gray-500 text-sm mb-1">Location</p>
+<p class="text-gray-900 font-medium">San Francisco, CA</p>
+</div>
+</div>
+<div class="mt-8">
+<h3 class="text-lg font-semibold text-gray-900 mb-4">Account Status</h3>
+<div class="flex items-center">
+<div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mr-4">Verified</div>
+<p class="text-gray-600">Your account is fully verified and active</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded shadow-sm p-8 mb-8">
+<h2 class="text-xl font-semibold text-gray-900 mb-6">Preferences</h2>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-gray-900 font-medium mb-1">Email Notifications</h3>
+<p class="text-gray-600 text-sm">Receive updates about new pitches and engagements</p>
+</div>
+<label class="custom-switch">
+<input type="checkbox" checked>
+<span class="switch-slider"></span>
+</label>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-gray-900 font-medium mb-1">SMS Notifications</h3>
+<p class="text-gray-600 text-sm">Receive text messages for important updates</p>
+</div>
+<label class="custom-switch">
+<input type="checkbox">
+<span class="switch-slider"></span>
+</label>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-gray-900 font-medium mb-1">Two-Factor Authentication</h3>
+<p class="text-gray-600 text-sm">Add an extra layer of security to your account</p>
+</div>
+<label class="custom-switch">
+<input type="checkbox" checked>
+<span class="switch-slider"></span>
+</label>
+</div>
+<div>
+<h3 class="text-gray-900 font-medium mb-3">Pitch Categories of Interest</h3>
+<div class="flex flex-wrap gap-2">
+<div class="bg-blue-100 text-blue-800 px-3 py-1.5 rounded-full text-sm font-medium flex items-center">
+Technology
+<div class="w-4 h-4 flex items-center justify-center ml-1 cursor-pointer">
+<i class="ri-close-line"></i>
+</div>
+</div>
+<div class="bg-green-100 text-green-800 px-3 py-1.5 rounded-full text-sm font-medium flex items-center">
+Sustainability
+<div class="w-4 h-4 flex items-center justify-center ml-1 cursor-pointer">
+<i class="ri-close-line"></i>
+</div>
+</div>
+<div class="bg-purple-100 text-purple-800 px-3 py-1.5 rounded-full text-sm font-medium flex items-center">
+Finance
+<div class="w-4 h-4 flex items-center justify-center ml-1 cursor-pointer">
+<i class="ri-close-line"></i>
+</div>
+</div>
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-sm font-medium flex items-center">
+<div class="w-4 h-4 flex items-center justify-center mr-1">
+<i class="ri-add-line"></i>
+</div>
+Add More
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded shadow-sm p-8">
+<h2 class="text-xl font-semibold text-gray-900 mb-6">Security</h2>
+<div class="space-y-6">
+<div>
+<h3 class="text-gray-900 font-medium mb-3">Change Password</h3>
+<button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap">Update Password</button>
+</div>
+<div>
+<h3 class="text-gray-900 font-medium mb-3">Connected Accounts</h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 flex items-center justify-center text-blue-600 mr-3">
+<i class="ri-google-fill ri-lg"></i>
+</div>
+<span class="text-gray-800">Google</span>
+</div>
+<div class="text-green-600 text-sm font-medium">Connected</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-8 h-8 flex items-center justify-center text-blue-800 mr-3">
+<i class="ri-linkedin-fill ri-lg"></i>
+</div>
+<span class="text-gray-800">LinkedIn</span>
+</div>
+<div class="flex flex-col items-end gap-2">
+<a href="#" class="text-gray-600 hover:text-gray-800 text-sm">View All</a>
+<button class="text-primary text-sm font-medium">Connect</button>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-gray-900 font-medium mb-3">Delete Account</h3>
+<p class="text-gray-600 text-sm mb-3">Once you delete your account, there is no going back. Please be certain.</p>
+<button class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 !rounded-button whitespace-nowrap">Delete Account</button>
+</div>
+</div>
+</div>
+</div>
+`;
+}
+function showHelpPage() {
+document.querySelector('main').innerHTML = `
+<div class="flex items-center mb-8">
+<a href="#" onclick="location.reload()" class="text-gray-800 font-medium flex items-center">
+<div class="w-10 h-10 flex items-center justify-center mr-2">
+<i class="ri-arrow-left-line ri-lg"></i>
+</div>
+<span>Back to Home</span>
+</a>
+</div>
+<div class="max-w-4xl mx-auto">
+<h1 class="text-3xl font-bold text-gray-900 mb-2">Help & Feedback</h1>
+<p class="text-gray-600 mb-8">Get support or share your thoughts with us to help improve the platform.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- FAQ Section -->
+<div>
+<h2 class="text-xl font-semibold text-gray-900 mb-6">Frequently Asked Questions</h2>
+<div class="space-y-4">
+<div class="border border-gray-200 rounded">
+<button class="w-full text-left px-4 py-3 focus:outline-none flex items-center justify-between" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('i').classList.toggle('ri-add-line'); this.querySelector('i').classList.toggle('ri-subtract-line')">
+<span class="font-medium text-gray-800">How do I engage with a pitch?</span>
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-add-line"></i>
+</div>
+</button>
+<div class="px-4 py-3 border-t border-gray-200 bg-gray-50 hidden">
+<p class="text-gray-600">To engage with a pitch, simply click the "Engage" button on any pitch card. This will allow you to view more details about the pitch and connect with the pitcher. You can ask questions, provide feedback, or express interest in collaboration.</p>
+</div>
+</div>
+<div class="border border-gray-200 rounded">
+<button class="w-full text-left px-4 py-3 focus:outline-none flex items-center justify-between" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('i').classList.toggle('ri-add-line'); this.querySelector('i').classList.toggle('ri-subtract-line')">
+<span class="font-medium text-gray-800">How do I become a pitcher?</span>
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-add-line"></i>
+</div>
+</button>
+<div class="px-4 py-3 border-t border-gray-200 bg-gray-50 hidden">
+<p class="text-gray-600">To become a pitcher, navigate to the "Change Portfolio to Pitcher" section from your dashboard. Fill out the required information including your areas of expertise and verification documents. Once approved, you'll be able to create and publish your own pitches.</p>
+</div>
+</div>
+<div class="border border-gray-200 rounded">
+<button class="w-full text-left px-4 py-3 focus:outline-none flex items-center justify-between" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('i').classList.toggle('ri-add-line'); this.querySelector('i').classList.toggle('ri-subtract-line')">
+<span class="font-medium text-gray-800">What are the verification requirements?</span>
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-add-line"></i>
+</div>
+</button>
+<div class="px-4 py-3 border-t border-gray-200 bg-gray-50 hidden">
+<p class="text-gray-600">Verification requirements vary by domain, but generally include proof of identity (government ID), professional credentials relevant to your field, and sometimes proof of business registration if applicable. All documents are securely processed and your information is kept confidential.</p>
+</div>
+</div>
+<div class="border border-gray-200 rounded">
+<button class="w-full text-left px-4 py-3 focus:outline-none flex items-center justify-between" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('i').classList.toggle('ri-add-line'); this.querySelector('i').classList.toggle('ri-subtract-line')">
+<span class="font-medium text-gray-800">How is pitch popularity calculated?</span>
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-add-line"></i>
+</div>
+</button>
+<div class="px-4 py-3 border-t border-gray-200 bg-gray-50 hidden">
+<p class="text-gray-600">Pitch popularity is calculated using a combination of factors including engagement rate, number of views, quality of interactions, and recency. The algorithm is designed to highlight pitches that are generating meaningful interest from the community.</p>
+</div>
+</div>
+<div class="border border-gray-200 rounded">
+<button class="w-full text-left px-4 py-3 focus:outline-none flex items-center justify-between" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('i').classList.toggle('ri-add-line'); this.querySelector('i').classList.toggle('ri-subtract-line')">
+<span class="font-medium text-gray-800">Is my information secure?</span>
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-add-line"></i>
+</div>
+</button>
+<div class="px-4 py-3 border-t border-gray-200 bg-gray-50 hidden">
+<p class="text-gray-600">Yes, we take security very seriously. All personal data is encrypted and stored securely. We use industry-standard security protocols and regularly audit our systems. You can enable two-factor authentication for additional account security.</p>
+</div>
+</div>
+</div>
+<a href="#" class="text-primary hover:text-primary/80 font-medium flex items-center mt-6">
+View All FAQs
+<div class="w-5 h-5 flex items-center justify-center ml-1">
+<i class="ri-arrow-right-line"></i>
+</div>
+</a>
+</div>
+<!-- Feedback Form -->
+<div>
+<h2 class="text-xl font-semibold text-gray-900 mb-6">Send Us Feedback</h2>
+<form class="space-y-6">
+<div>
+<label for="feedbackType" class="block text-gray-700 font-medium mb-2">Feedback Type</label>
+<div class="relative">
+<button type="button" id="feedbackTypeButton" class="w-full px-4 py-2 bg-white border border-gray-300 rounded text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-primary">
+<span>Select feedback type</span>
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</button>
+<div id="feedbackTypeDropdown" class="hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg">
+<div class="py-1">
+<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">General Feedback</a>
+<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Bug Report</a>
+<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Feature Request</a>
+<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Account Issue</a>
+<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Other</a>
+</div>
+</div>
+</div>
+</div>
+<div>
+<label for="subject" class="block text-gray-700 font-medium mb-2">Subject</label>
+<input type="text" id="subject" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Brief description of your feedback">
+</div>
+<div>
+<label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+<textarea id="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Please provide as much detail as possible..."></textarea>
+</div>
+<div>
+<label for="attachments" class="block text-gray-700 font-medium mb-2">Attachments (Optional)</label>
+<div class="border-2 border-dashed border-gray-300 rounded p-4 text-center">
+<div class="w-10 h-10 mx-auto flex items-center justify-center bg-gray-100 rounded-full mb-3 text-gray-400">
+<i class="ri-upload-cloud-line ri-lg"></i>
+</div>
+<p class="text-gray-600 text-sm mb-2">Drag and drop files here, or click to browse</p>
+<p class="text-gray-500 text-xs">Max file size: 10MB</p>
+<input type="file" class="hidden" id="fileUpload" multiple>
+<button type="button" onclick="document.getElementById('fileUpload').click()" class="mt-3 bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 text-sm !rounded-button whitespace-nowrap">Select Files</button>
+</div>
+</div>
+<div class="flex items-start">
+<input type="checkbox" id="followUp" class="custom-checkbox mt-1">
+<label for="followUp" class="ml-2 text-gray-700">I would like to receive a follow-up response to my feedback</label>
+</div>
+<button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 !rounded-button whitespace-nowrap">Submit Feedback</button>
+</form>
+</div>
+</div>
+<div class="mt-12 bg-gray-50 rounded p-8 flex flex-col md:flex-row items-center justify-between">
+<div>
+<h2 class="text-xl font-semibold text-gray-900 mb-2">Need immediate assistance?</h2>
+<p class="text-gray-600">Our support team is available Monday through Friday, 9am to 5pm PT.</p>
+</div>
+<div class="mt-4 md:mt-0 flex space-x-4">
+<button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-2 text-primary">
+<i class="ri-message-2-line"></i>
+</div>
+Live Chat
+</button>
+<button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 !rounded-button whitespace-nowrap flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-2 text-primary">
+<i class="ri-phone-line"></i>
+</div>
+Call Support
+</button>
+</div>
+</div>
+</div>
+`;
+// Initialize feedback type dropdown
+document.getElementById('feedbackTypeButton').addEventListener('click', function() {
+const dropdown = document.getElementById('feedbackTypeDropdown');
+dropdown.classList.toggle('hidden');
+});
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+const dropdown = document.getElementById('feedbackTypeDropdown');
+const button = document.getElementById('feedbackTypeButton');
+if (!dropdown || !button) return;
+if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+dropdown.classList.add('hidden');
+}
+});
+}
+</script>
+</body>
+</html>

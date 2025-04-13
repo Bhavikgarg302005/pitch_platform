@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitch Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .filter-container {
+            margin-bottom: 15px;
+        }
+
+        select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 5px;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #218838;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+        }
+
+        .btn-back {
+            margin-top: 20px;
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+        }
+
+        .btn-back:hover {
+            background: #5a6268;
+        }
+    </style>
+    <script>
+        // Simulating API response (List of Pitches)
+        let pitches = [
+            [1, "John Doe", "Revolutionary AI-Based E-commerce", "Pending"],
+            [2, "Emma Smith", "Sustainable Energy Solutions", "Approved"],
+            [3, "David Brown", "Blockchain-Based Voting System", "Pending"],
+            [4, "Sophia White", "Smart Healthcare Assistant", "Rejected"]
+        ];
+
+        function loadPitches(filter = "All") {
+            let tableBody = document.getElementById("pitchTableBody");
+            tableBody.innerHTML = "";  // Clear previous data
+
+            pitches.forEach((pitch, index) => {
+                if (filter === "All" || pitch[3] === filter) {
+                    let actionButtons = pitch[3] === "Pending" ? `
+                        <button class="btn btn-approve" onclick="approvePitch(${index})">Approve</button>
+                        <button class="btn btn-reject" onclick="rejectPitch(${index})">Reject</button>
+                    ` : `<span>${pitch[3]}</span>`;
+
+                    let row = `<tr>
+                        <td>${pitch[0]}</td>
+                        <td>${pitch[1]}</td>
+                        <td>${pitch[2]}</td>
+                        <td>${actionButtons}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                }
+            });
+        }
+
+        function approvePitch(index) {
+            pitches[index][3] = "Approved"; // Change status
+            loadPitches(document.getElementById("filter").value);
+        }
+
+        function rejectPitch(index) {
+            pitches[index][3] = "Rejected"; // Change status
+            loadPitches(document.getElementById("filter").value);
+        }
+
+        function goBack() {
+            window.location.href = "admin_dashboard.html"; // Change to actual dashboard page
+        }
+
+        window.onload = () => loadPitches();  // Load pitches on page load
+    </script>
+</head>
+<body>
+
+    <h2>Pitch Verification</h2>
+
+    <div class="filter-container">
+        <label for="filter">Filter by Status:</label>
+        <select id="filter" onchange="loadPitches(this.value)">
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Pitcher</th>
+                <th>Pitch Idea</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="pitchTableBody">
+            <!-- Pitches will be loaded here dynamically -->
+        </tbody>
+    </table>
+    <a href="Admin.html">
+        <button>⬅ Back to Dashboard</button>
+        </a>
+
+</body>
+</html>

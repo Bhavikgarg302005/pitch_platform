@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        a {
+    text-decoration: none;
+    color: rgb(235, 235, 235); /* Default color */
+}
+
+a:visited {
+    color: #fbfbfb; /* Ensures visited links stay black */
+}
+
+
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: #5d6873;
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+            transition: width 0.3s;
+        }
+
+        .sidebar:hover {
+            width: 280px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li:hover {
+            background: hsl(210, 9%, 45%);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* Top Stats */
+        .stats-container {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(84, 84, 84, 0.2);
+            width: 30%;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .stat-box:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .stat-box .details {
+            display: none;
+            margin-top: 10px;
+        }
+
+        /* Graph & Recent Activities */
+        .content-section {
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+    </style>
+    <script>
+        function toggleDetails(id) {
+            const details = document.getElementById(id);
+            if (details.style.display === "none" || details.style.display === "") {
+                details.style.display = "block";
+            } else {
+                details.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul>
+            <li>Dashboard</li>
+            <a href="UserManagement.html">
+                <li>User Management</li>
+            </a>
+            <a href="PitchVerification.html">
+            <li>Pitch Verification</li>
+            </a>
+            <a href="MonitorDeals.html">
+            <li>Deals Monitoring</li>
+            </a>
+            <a href="lyrics.html">
+            <li>Logout</li>
+            </a>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <!-- Stats Section -->
+        <div class="stats-container">
+            <div class="stat-box" onclick="toggleDetails('totalUsersDetails')">
+                <h3>Total Users</h3>
+                <div class="details" id="totalUsersDetails">
+                    <p>24,521</p>
+                </div>
+            </div>
+            <div class="stat-box" onclick="toggleDetails('pendingVerificationsDetails')">
+                <h3>Pending Verifications</h3>
+                <div class="details" id="pendingVerificationsDetails">
+                    <p>156</p>
+                </div>
+            </div>
+            <div class="stat-box" onclick="toggleDetails('finalizedDealsDetails')">
+                <h3>Finalized Deals</h3>
+                <div class="details" id="finalizedDealsDetails">
+                    <p>89</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graph / Data Section -->
+        <div class="content-section">
+            <h3>User Growth</h3>
+            <p>Graph will be placed here</p>
+        </div>
+
+        <div class="content-section">
+            <h3>Recent Activities</h3>
+            <p>Activity logs will be displayed here</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

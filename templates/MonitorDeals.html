@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Deals</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .filter-container {
+            margin-bottom: 15px;
+        }
+
+        select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 5px;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #218838;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+        }
+
+        .btn-back {
+            margin-top: 20px;
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+        }
+
+        .btn-back:hover {
+            background: #5a6268;
+        }
+    </style>
+    <script>
+        // Simulating API response (List of Deals)
+        let deals = [
+            [1, "John Doe", "Sarah Smith", "Pending"],
+            [2, "Michael Brown", "Emma Davis", "Approved"],
+            [3, "David Wilson", "Olivia Taylor", "Pending"],
+            [4, "James Anderson", "Sophia Martinez", "Rejected"]
+        ];
+
+        function loadDeals(filter = "All") {
+            let tableBody = document.getElementById("dealTableBody");
+            tableBody.innerHTML = "";  // Clear previous data
+
+            deals.forEach((deal, index) => {
+                if (filter === "All" || deal[3] === filter) {
+                    let actionButtons = deal[3] === "Pending" ? `
+                        <button class="btn btn-approve" onclick="approveDeal(${index})">Approve</button>
+                        <button class="btn btn-reject" onclick="rejectDeal(${index})">Reject</button>
+                    ` : `<span>${deal[3]}</span>`;
+
+                    let row = `<tr>
+                        <td>${deal[0]}</td>
+                        <td>${deal[1]}</td>
+                        <td>${deal[2]}</td>
+                        <td>${actionButtons}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                }
+            });
+        }
+
+        function approveDeal(index) {
+            deals[index][3] = "Approved"; // Change status
+            loadDeals(document.getElementById("filter").value);
+        }
+
+        function rejectDeal(index) {
+            deals[index][3] = "Rejected"; // Change status
+            loadDeals(document.getElementById("filter").value);
+        }
+
+        function goBack() {
+            window.location.href = "admin_dashboard.html"; // Change to actual dashboard page
+        }
+
+        window.onload = () => loadDeals();  // Load deals on page load
+    </script>
+</head>
+<body>
+
+    <h2>Monitor Deals</h2>
+
+    <div class="filter-container">
+        <label for="filter">Filter by Status:</label>
+        <select id="filter" onchange="loadDeals(this.value)">
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Pitcher</th>
+                <th>Investor</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="dealTableBody">
+            <!-- Deals will be loaded here dynamically -->
+        </tbody>
+    </table>
+    <a href="Admin.html">
+    <button>⬅ Back to Dashboard</button>
+    </a>
+</body>
+</html>

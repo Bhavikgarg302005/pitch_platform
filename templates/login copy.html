@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - E-SharkTank</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 350px;
+            position: relative;
+        }
+        input, button, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .role-form {
+            display: none;
+            margin-top: 15px;
+        }
+        .back-button {
+            display: block;
+            width: 100px;
+            margin: 15px auto;
+            background-color: #6c757d;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .back-button:hover {
+            background-color: #495057;
+        }
+    </style>
+    <script>
+        function showForm() {
+            var role = document.getElementById("role-select").value;
+            var forms = document.getElementsByClassName("role-form");
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].style.display = "none";
+            }
+            if (role) {
+                document.getElementById(role + "-form").style.display = "block";
+            }
+        }
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <select id="role-select" onchange="showForm()">
+            <option value="">Select Role</option>
+            <option value="admin">Admin</option>
+            <option value="pitcher">Pitcher</option>
+            <option value="investor">Investor</option>
+            <option value="audience">Audience</option>
+        </select>
+       <div id="admin-form" class="role-form">
+            <h3>Admin Login</h3>
+            <input type="email" placeholder="Admin Email">
+            <input type="password" placeholder="Password">
+            <a href="Admin.html">
+                <button>Login</button>
+            </a>
+        </div>
+        <div id="pitcher-form" class="role-form">
+            <h3>Pitcher Login</h3>
+            <input type="email" placeholder="Pitcher Email">
+            <input type="password" placeholder="Password">
+            <button>Login</button>
+        </div>
+        <div id="investor-form" class="role-form">
+            <h3>Investor Login</h3>
+            <input type="email" placeholder="Investor Email">
+            <input type="password" placeholder="Password">
+            <button>Login</button>
+        </div>
+        <div id="audience-form" class="role-form">
+            <h3>Audience Login</h3>
+            <input type="email" placeholder="Audience Email">
+            <input type="password" placeholder="Password">
+            <a href="check.html">
+                <button>Login</button>
+            </a>
+        </div>
+        <a href="lyrics.html">
+        <button>Back</button>
+    </a>
+    </div>
+</body>
+</html>

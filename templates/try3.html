@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create New Pitch - Step 2 | E-Shark Tank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#3176FF',secondary:'#64748b'},borderRadius:{'none':'0px','sm':'2px',DEFAULT:'4px','md':'8px','lg':'12px','xl':'16px','2xl':'20px','3xl':'24px','full':'9999px','button':'4px'}}}}</script>
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+.custom-range {
+-webkit-appearance: none;
+width: 100%;
+height: 6px;
+background: #e5e7eb;
+border-radius: 5px;
+outline: none;
+}
+.custom-range::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 18px;
+height: 18px;
+background: #3176FF;
+border-radius: 50%;
+cursor: pointer;
+}
+.custom-range::-moz-range-thumb {
+width: 18px;
+height: 18px;
+background: #3176FF;
+border-radius: 50%;
+cursor: pointer;
+}
+.step-indicator {
+position: relative;
+display: flex;
+justify-content: space-between;
+}
+.step-indicator::before {
+content: '';
+position: absolute;
+top: 50%;
+left: 0;
+right: 0;
+height: 2px;
+background: #e5e7eb;
+transform: translateY(-50%);
+z-index: 1;
+}
+.step {
+position: relative;
+z-index: 2;
+background: white;
+padding: 0 8px;
+}
+.step-active .step-number {
+background: #3176FF;
+color: white;
+}
+.step-completed .step-number {
+background: #10b981;
+color: white;
+}
+.step-number {
+width: 32px;
+height: 32px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 50%;
+background: #f3f4f6;
+margin-bottom: 8px;
+}
+.file-upload-container {
+border: 2px dashed #e5e7eb;
+border-radius: 4px;
+padding: 2rem;
+text-align: center;
+transition: all 0.3s ease;
+}
+.file-upload-container:hover {
+border-color: #3176FF;
+}
+.custom-checkbox {
+position: relative;
+display: inline-block;
+width: 18px;
+height: 18px;
+margin-right: 8px;
+}
+.custom-checkbox input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.checkmark {
+position: absolute;
+top: 0;
+left: 0;
+height: 18px;
+width: 18px;
+background-color: #fff;
+border: 1px solid #d1d5db;
+border-radius: 4px;
+}
+.custom-checkbox input:checked ~ .checkmark {
+background-color: #3176FF;
+border-color: #3176FF;
+}
+.checkmark:after {
+content: "";
+position: absolute;
+display: none;
+}
+.custom-checkbox input:checked ~ .checkmark:after {
+display: block;
+}
+.custom-checkbox .checkmark:after {
+left: 6px;
+top: 2px;
+width: 5px;
+height: 10px;
+border: solid white;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
+}
+.custom-switch {
+position: relative;
+display: inline-block;
+width: 44px;
+height: 24px;
+}
+.custom-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.switch-slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #e5e7eb;
+transition: .4s;
+border-radius: 34px;
+}
+.switch-slider:before {
+position: absolute;
+content: "";
+height: 18px;
+width: 18px;
+left: 3px;
+bottom: 3px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+.custom-switch input:checked + .switch-slider {
+background-color: #3176FF;
+}
+.custom-switch input:checked + .switch-slider:before {
+transform: translateX(20px);
+}
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<!-- Navigation Bar -->
+<header class="bg-white shadow-sm">
+<div class="container mx-auto px-4 py-3 flex items-center justify-between">
+<div class="flex items-center space-x-8">
+<a href="index.html" class="flex items-center">
+<div class="text-2xl font-['Pacifico'] text-primary">logo</div>
+</a>
+<nav class="hidden md:flex space-x-6">
+<a href="index.html" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-home-line"></i>
+</div>
+Home
+</a>
+<a href="dashboard.html" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-dashboard-line"></i>
+</div>
+Dashboard
+</a>
+<a href="pitches.html" class="text-primary font-medium border-b-2 border-primary pb-1 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-presentation-line"></i>
+</div>
+My Pitches
+</a>
+<a href="analytics.html" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-bar-chart-line"></i>
+</div>
+Analytics
+</a>
+<a href="investments.html" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-money-dollar-circle-line"></i>
+</div>
+Investments
+</a>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative hidden md:block w-64">
+<input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 text-sm bg-gray-100 rounded border-none focus:ring-2 focus:ring-primary/20 focus:outline-none">
+<div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-500">
+<i class="ri-search-line"></i>
+</div>
+</div>
+<div class="flex items-center space-x-3">
+<div class="w-5 h-5 flex items-center justify-center text-gray-600">
+<i class="ri-notification-3-line"></i>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+<span class="text-sm font-medium">DA</span>
+</div>
+<a href="#" class="text-gray-800 font-medium flex items-center">
+David Anderson
+<div class="w-4 h-4 flex items-center justify-center ml-1">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</a>
+</div>
+<a href="#" class="text-gray-600 hover:text-gray-900 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-logout-box-line"></i>
+</div>
+</a>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="container mx-auto px-4 py-8">
+<div class="max-w-4xl mx-auto">
+<!-- Page Header -->
+<div class="mb-8">
+<h1 class="text-2xl font-bold text-gray-900">Create New Pitch</h1>
+<p class="text-gray-600 mt-1">Complete all required information to create your pitch and attract investors.</p>
+</div>
+<!-- Step Indicator -->
+<div class="step-indicator mb-8">
+<div class="flex flex-col items-center step step-completed">
+<div class="step-number">
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-check-line"></i>
+</div>
+</div>
+<span class="text-sm font-medium text-green-600">Basic Info</span>
+</div>
+<div class="flex flex-col items-center step step-active">
+<div class="step-number">2</div>
+<span class="text-sm font-medium text-primary">Financial Details</span>
+</div>
+</div>
+<!-- Form Section -->
+<div class="bg-white p-6 rounded shadow-sm border border-gray-100">
+<form id="financialDetailsForm">
+<div class="space-y-6">
+<!-- Funding Goal -->
+<div>
+<label for="fundingGoal" class="block text-sm font-medium text-gray-700 mb-1">Funding Goal</label>
+<div class="flex">
+<div class="relative flex-grow">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="text-gray-500 sm:text-sm">$</span>
+</div>
+<input type="text" id="fundingGoal" name="fundingGoal" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-l focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary" placeholder="0.00">
+</div>
+<div class="relative">
+<button type="button" class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-700 text-sm font-medium rounded-r hover:bg-gray-100 focus:outline-none">
+USD
+<div class="w-4 h-4 flex items-center justify-center ml-2">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</button>
+</div>
+</div>
+<p class="mt-1 text-sm text-gray-500">Enter the total amount of funding you're seeking.</p>
+</div>
+<!-- Equity Offering -->
+<div>
+<div class="flex justify-between mb-1">
+<label for="equityOffering" class="block text-sm font-medium text-gray-700">Equity Offering</label>
+<span class="text-sm text-gray-500" id="equityValue">15%</span>
+</div>
+<input type="range" id="equityOffering" name="equityOffering" min="1" max="100" value="15" class="custom-range w-full">
+<div class="flex justify-between text-xs text-gray-500 mt-1">
+<span>1%</span>
+<span>50%</span>
+<span>100%</span>
+</div>
+<p class="mt-1 text-sm text-gray-500">Percentage of equity you're willing to offer in exchange for funding.</p>
+</div>
+<!-- Current Valuation -->
+<div>
+<label for="currentValuation" class="block text-sm font-medium text-gray-700 mb-1">Current Valuation</label>
+<div class="flex">
+<div class="relative flex-grow">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="text-gray-500 sm:text-sm">$</span>
+</div>
+<input type="text" id="currentValuation" name="currentValuation" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-l focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary" placeholder="0.00">
+</div>
+<div class="relative">
+<button type="button" class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-700 text-sm font-medium rounded-r hover:bg-gray-100 focus:outline-none">
+USD
+<div class="w-4 h-4 flex items-center justify-center ml-2">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</button>
+</div>
+</div>
+<p class="mt-1 text-sm text-gray-500">Your company's estimated current valuation.</p>
+</div>
+<!-- Revenue Information -->
+<div class="border border-gray-200 rounded p-4">
+<h3 class="text-base font-medium text-gray-900 mb-4">Revenue Information</h3>
+<div class="space-y-4">
+<!-- Current Revenue -->
+<div>
+<div class="flex items-center justify-between mb-1">
+<label for="currentRevenue" class="block text-sm font-medium text-gray-700">Current Annual Revenue</label>
+<div class="flex items-center">
+<label class="custom-switch mr-2">
+<input type="checkbox" id="hasRevenue">
+<span class="switch-slider"></span>
+</label>
+<span class="text-sm text-gray-500">Has Revenue</span>
+</div>
+</div>
+<div class="flex">
+<div class="relative flex-grow">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="text-gray-500 sm:text-sm">$</span>
+</div>
+<input type="text" id="currentRevenue" name="currentRevenue" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-l focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary" placeholder="0.00" disabled>
+</div>
+<div class="relative">
+<button type="button" class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-700 text-sm font-medium rounded-r hover:bg-gray-100 focus:outline-none">
+USD
+<div class="w-4 h-4 flex items-center justify-center ml-2">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</button>
+</div>
+</div>
+</div>
+<!-- Projected Revenue -->
+<div>
+<label for="projectedRevenue" class="block text-sm font-medium text-gray-700 mb-1">Projected Revenue (Next 12 Months)</label>
+<div class="flex">
+<div class="relative flex-grow">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="text-gray-500 sm:text-sm">$</span>
+</div>
+<input type="text" id="projectedRevenue" name="projectedRevenue" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-l focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary" placeholder="0.00">
+</div>
+<div class="relative">
+<button type="button" class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-700 text-sm font-medium rounded-r hover:bg-gray-100 focus:outline-none">
+USD
+<div class="w-4 h-4 flex items-center justify-center ml-2">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</button>
+</div>
+</div>
+</div>
+<!-- Revenue Growth Rate -->
+<div>
+<div class="flex justify-between mb-1">
+<label for="growthRate" class="block text-sm font-medium text-gray-700">Revenue Growth Rate (Annual)</label>
+<span class="text-sm text-gray-500" id="growthRateValue">25%</span>
+</div>
+<input type="range" id="growthRate" name="growthRate" min="0" max="200" value="25" class="custom-range w-full">
+<div class="flex justify-between text-xs text-gray-500 mt-1">
+<span>0%</span>
+<span>100%</span>
+<span>200%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Investment Timeline -->
+<div class="border border-gray-200 rounded p-4">
+<h3 class="text-base font-medium text-gray-900 mb-4">Investment Timeline</h3>
+<div class="space-y-4">
+<!-- Funding Round -->
+<div>
+<label for="fundingRound" class="block text-sm font-medium text-gray-700 mb-1">Funding Round</label>
+<div class="relative">
+<select id="fundingRound" name="fundingRound" class="w-full px-4 py-2 border border-gray-300 rounded appearance-none focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary pr-8">
+<option value="pre-seed">Pre-Seed</option>
+<option value="seed">Seed</option>
+<option value="series-a">Series A</option>
+<option value="series-b">Series B</option>
+<option value="series-c">Series C</option>
+<option value="series-d">Series D+</option>
+<option value="growth">Growth</option>
+</select>
+<div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none w-4 h-4 flex items-center justify-center text-gray-500">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+</div>
+<!-- Investment Duration -->
+<div>
+<label for="investmentDuration" class="block text-sm font-medium text-gray-700 mb-1">Investment Duration</label>
+<div class="flex items-center space-x-2">
+<input type="number" id="investmentDuration" name="investmentDuration" min="1" max="60" value="12" class="w-20 px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary">
+<span class="text-gray-700">months</span>
+</div>
+<p class="mt-1 text-sm text-gray-500">Expected timeline to secure the full investment amount.</p>
+</div>
+<!-- Minimum Investment -->
+<div>
+<label for="minimumInvestment" class="block text-sm font-medium text-gray-700 mb-1">Minimum Investment Amount</label>
+<div class="flex">
+<div class="relative flex-grow">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="text-gray-500 sm:text-sm">$</span>
+</div>
+<input type="text" id="minimumInvestment" name="minimumInvestment" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-l focus:ring-2 focus:ring-primary/20 focus:outline-none focus:border-primary" placeholder="0.00">
+</div>
+<div class="relative">
+<button type="button" class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-700 text-sm font-medium rounded-r hover:bg-gray-100 focus:outline-none">
+USD
+<div class="w-4 h-4 flex items-center justify-center ml-2">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</button>
+</div>
+</div>
+<p class="mt-1 text-sm text-gray-500">Minimum amount an investor can contribute.</p>
+</div>
+</div>
+</div>
+<!-- Financial Projections -->
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Financial Projections</label>
+<div class="file-upload-container">
+<div class="w-12 h-12 mx-auto mb-3 flex items-center justify-center text-primary">
+<i class="ri-upload-cloud-line ri-2x"></i>
+</div>
+<p class="text-sm font-medium text-gray-900">Drag and drop your financial documents here</p>
+<p class="text-xs text-gray-500 mt-1">or <span class="text-primary cursor-pointer">browse files</span></p>
+<p class="text-xs text-gray-500 mt-3">Supported formats: PDF, XLSX, CSV (Max 10MB)</p>
+<input type="file" id="financialDocs" name="financialDocs" class="hidden" multiple>
+</div>
+<div class="mt-3">
+<div class="flex items-center">
+<label class="custom-checkbox">
+<input type="checkbox" checked>
+<span class="checkmark"></span>
+</label>
+<span class="text-sm text-gray-700">I confirm that all financial information provided is accurate and can be verified.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Form Navigation -->
+<div class="flex justify-between mt-8">
+<a href="https://readdy.ai/home/50b161c3-e2cf-421d-a3c7-4231a80fa1e7/0a142784-0f4c-409a-88d4-9c6d73c3468a" data-readdy="true" class="px-4 py-2 border border-gray-300 rounded-button text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+<div class="flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-2">
+<i class="ri-arrow-left-line"></i>
+</div>
+Back
+</div>
+</a>
+<div class="flex space-x-3">
+<button type="button" id="saveDraft" class="px-4 py-2 border border-gray-300 rounded-button text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+<div class="flex items-center">
+<div class="w-5 h-5 flex items-center justify-center mr-2">
+<i class="ri-save-line"></i>
+</div>
+Save as Draft
+</div>
+</button>
+<button type="button" id="nextStep" class="px-4 py-2 bg-primary text-white rounded-button hover:bg-primary/90 whitespace-nowrap">
+<div class="flex items-center">
+Next Step
+<div class="w-5 h-5 flex items-center justify-center ml-2">
+<i class="ri-arrow-right-line"></i>
+</div>
+</div>
+</button>
+</div>
+</div>
+</form>
+</div>
+</div>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+// Equity offering slider
+const equitySlider = document.getElementById('equityOffering');
+const equityValue = document.getElementById('equityValue');
+equitySlider.addEventListener('input', function() {
+equityValue.textContent = this.value + '%';
+});
+// Growth rate slider
+const growthSlider = document.getElementById('growthRate');
+const growthValue = document.getElementById('growthRateValue');
+growthSlider.addEventListener('input', function() {
+growthValue.textContent = this.value + '%';
+});
+// Has revenue toggle
+const hasRevenueToggle = document.getElementById('hasRevenue');
+const currentRevenueInput = document.getElementById('currentRevenue');
+hasRevenueToggle.addEventListener('change', function() {
+currentRevenueInput.disabled = !this.checked;
+if (this.checked) {
+currentRevenueInput.focus();
+}
+});
+// File upload functionality
+const fileUploadContainer = document.querySelector('.file-upload-container');
+const fileInput = document.getElementById('financialDocs');
+fileUploadContainer.addEventListener('click', function() {
+fileInput.click();
+});
+fileUploadContainer.addEventListener('dragover', function(e) {
+e.preventDefault();
+this.classList.add('border-primary');
+});
+fileUploadContainer.addEventListener('dragleave', function() {
+this.classList.remove('border-primary');
+});
+fileUploadContainer.addEventListener('drop', function(e) {
+e.preventDefault();
+this.classList.remove('border-primary');
+fileInput.files = e.dataTransfer.files;
+updateFileList();
+});
+fileInput.addEventListener('change', updateFileList);
+function updateFileList() {
+// This would display the selected files
+console.log('Files selected:', fileInput.files);
+// In a real implementation, you would show the file names here
+}
+// Form navigation
+const nextStepButton = document.getElementById('nextStep');
+nextStepButton.addEventListener('click', function() {
+// Validate form fields
+const fundingGoal = document.getElementById('fundingGoal').value;
+const currentValuation = document.getElementById('currentValuation').value;
+const projectedRevenue = document.getElementById('projectedRevenue').value;
+if (!fundingGoal || !currentValuation || !projectedRevenue) {
+alert('Please fill in all required fields before proceeding.');
+return;
+}
+// Submit the form
+window.location.href = 'pitches.html';
+});
+const saveDraftButton = document.getElementById('saveDraft');
+saveDraftButton.addEventListener('click', function() {
+// Save form data to localStorage or send to server
+alert('Your pitch has been saved as a draft.');
+});
+// Format currency inputs
+const currencyInputs = document.querySelectorAll('input[id$="Revenue"], input[id="fundingGoal"], input[id="currentValuation"], input[id="minimumInvestment"]');
+currencyInputs.forEach(input => {
+input.addEventListener('blur', function() {
+// Format as currency
+const value = this.value.replace(/[^\d.]/g, '');
+if (value) {
+this.value = parseFloat(value).toLocaleString('en-US', {
+minimumFractionDigits: 2,
+maximumFractionDigits: 2
+});
+}
+});
+input.addEventListener('focus', function() {
+// Remove formatting for editing
+this.value = this.value.replace(/,/g, '');
+});
+});
+});
+</script>
+</body>
+</html>
