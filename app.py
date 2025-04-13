@@ -92,20 +92,20 @@ def monitor_deals_page():
     print("Attempting to render:", app.template_folder + '/MonitorDeals.html')
     return render_template('MonitorDeals.html')
 
+
 @app.route('/monitor_deals')
 def monitor_deals():
     filter_status = request.args.get('filter', 'All')
-    filtered_deals = deals_db
-    if filter_status != 'All':
-        filtered_deals = [d for d in deals_db if d['status'] == filter_status]
-    response = jsonify({'deals': filtered_deals})
-    response.headers.add('Content-Type', 'application/json')
-    return response
+    filtered_deals = [d for d in deals_db if filter_status == 'All' or d['status'] == filter_status]
+    print(f"Sending {len(filtered_deals)} deals (filter: {filter_status})")  # Debug
+    return jsonify({'deals': filtered_deals})
+
 
 @app.route('/logout')
 def logout():
     # Add logout functionality here
     return redirect('/login')
+
 
 @app.route('/pitches_to_verify')
 def pitches_to_verify():
@@ -150,37 +150,60 @@ def reject_pitch():
 
 @app.route('/approve_deal', methods=['POST'])
 def approve_deal():
-    deal_id = request.form.get('deal_id')
-    if deal_id is None:
+    try:
         data = request.get_json()
         deal_id = data.get('deal_id')
         
-    deal_id = int(deal_id)
-    
-    # Update the deal status in database
-    for deal in deals_db:
-        if deal['id'] == deal_id:
-            deal['status'] = 'Approved'
-            break
-    
-    return jsonify({'status': 'success', 'message': f'Deal {deal_id} approved'})
+        # Find and update deal
+        for deal in deals_db:
+            if deal['id'] == deal_id:
+                deal['status'] = 'Approved'
+                print(f"Deal {deal_id} approved")  # Debug
+                return jsonify({
+                    'status': 'success', 
+                    'message': f'Deal {deal_id} approved'
+                })
+        
+        return jsonify({
+            'status': 'error',
+            'message': 'Deal not found'
+        }), 404
+        
+    except Exception as e:
+        print(f"Error approving deal: {str(e)}")  # Debug
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
 
 @app.route('/reject_deal', methods=['POST'])
 def reject_deal():
-    deal_id = request.form.get('deal_id')
-    if deal_id is None:
+    try:
         data = request.get_json()
         deal_id = data.get('deal_id')
         
-    deal_id = int(deal_id)
-    
-    # Update the deal status in database
-    for deal in deals_db:
-        if deal['id'] == deal_id:
-            deal['status'] = 'Rejected'
-            break
-    
-    return jsonify({'status': 'success', 'message': f'Deal {deal_id} rejected'})
+        # Find and update deal
+        for deal in deals_db:
+            if deal['id'] == deal_id:
+                deal['status'] = 'Rejected'
+                print(f"Deal {deal_id} rejected")  # Debug
+                return jsonify({
+                    'status': 'success', 
+                    'message': f'Deal {deal_id} rejected'
+                })
+        
+        return jsonify({
+            'status': 'error',
+            'message': 'Deal not found'
+        }), 404
+        
+    except Exception as e:
+        print(f"Error rejecting deal: {str(e)}")  # Debug
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
 
 @app.route('/pending_users')
 def get_pending_users():

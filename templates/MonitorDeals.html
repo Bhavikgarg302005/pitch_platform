@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pitch Verification</title>
+    <title>Monitor Deals</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,7 +15,6 @@
         h2 {
             margin-bottom: 20px;
         }
-
         .filter-container {
             margin-bottom: 15px;
         }
@@ -85,156 +84,168 @@
             background: #5a6268;
         }
     </style>
-</head>
-<body>
-    <h2>Pitch Verification</h2>
-
-    <div class="filter-container">
-        <label for="filter">Filter by Status:</label>
-        <select id="filter">
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
-        </select>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Pitcher</th>
-                <th>Pitch Idea</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="pitchTableBody">
-            <!-- Pitches will be loaded here dynamically -->
-            <tr><td colspan="4">Loading pitches...</td></tr>
-        </tbody>
-    </table>
-
-    <a href="/admin_dashboard">
-        <button class="btn-back">⬅ Back to Dashboard</button>
-    </a>
-
-    <script>
-        // Function to load pitches from server
-        function loadPitches(filterStatus) {
-            console.log("Loading pitches with filter:", filterStatus);
-            
-            fetch('/pitches_to_verify?filter=' + filterStatus)
-                .then(response => {
-                    console.log("Response status:", response.status);
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Received data:", data);
-                    renderPitches(data.pitches);
-                })
-                .catch(error => {
-                    console.error("Error fetching pitches:", error);
-                    document.getElementById("pitchTableBody").innerHTML = 
-                        `<tr><td colspan="4">Error loading pitches: ${error.message}</td></tr>`;
-                });
+   <script>
+async function loadDeals(filterStatus = 'All') {
+    try {
+        console.log("Loading deals with filter:", filterStatus);
+        const response = await fetch(`/monitor_deals?filter=${filterStatus}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        // Function to render pitches in the table
-        function renderPitches(pitches) {
-            console.log("Rendering", pitches ? pitches.length : 0, "pitches");
-            
-            const tableBody = document.getElementById("pitchTableBody");
-            tableBody.innerHTML = "";
-            
-            if (!pitches || pitches.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="4">No pitches found</td></tr>';
-                return;
-            }
-            
-            for (const pitch of pitches) {
-                const row = document.createElement('tr');
-                
-                let actionCell;
-                if (pitch.status === 'Pending') {
-                    actionCell = `
-                        <td>
-                            <button class="btn btn-approve" onclick="approvePitch(${pitch.id})">Approve</button>
-                            <button class="btn btn-reject" onclick="rejectPitch(${pitch.id})">Reject</button>
-                        </td>
-                    `;
-                } else {
-                    actionCell = `<td>${pitch.status}</td>`;
-                }
-                
-                row.innerHTML = `
-                    <td>${pitch.id}</td>
-                    <td>${pitch.pitcher || 'Unknown'}</td>
-                    <td>${pitch.title || 'No title'}</td>
-                    ${actionCell}
-                `;
-                tableBody.appendChild(row);
-            }
+        const data = await response.json();
+        console.log("Received deals data:", data);
+        renderDeals(data.deals);
+    } catch (error) {
+        console.error("Error loading deals:", error);
+        document.getElementById("dealsTableBody").innerHTML = 
+            `<tr><td colspan="5">Error loading deals: ${error.message}</td></tr>`;
+    }
+}
+
+// Function to render deals in the table
+function renderDeals(deals) {
+    const tableBody = document.getElementById("dealsTableBody");
+    tableBody.innerHTML = "";
+    
+    if (!deals || deals.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5">No deals found</td></tr>';
+        return;
+    }
+    
+    deals.forEach(deal => {
+        const row = document.createElement('tr');
+        
+        let actionCell;
+        if (deal.status === 'Pending') {
+            actionCell = `
+                <td>
+                    <button class="btn btn-approve" data-deal-id="${deal.id}">Approve</button>
+                    <button class="btn btn-reject" data-deal-id="${deal.id}">Reject</button>
+                </td>
+            `;
+        } else {
+            actionCell = `<td>${deal.status}</td>`;
         }
         
-        // Function to approve a pitch
-        function approvePitch(pitchId) {
-            console.log("Approving pitch:", pitchId);
-            
-            fetch('/approve_pitch', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: pitchId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Approval response:", data);
-                alert(data.message);
-                // Reload pitches after approval
-                loadPitches(document.getElementById("filter").value);
-            })
-            .catch(error => {
-                console.error("Error approving pitch:", error);
-                alert("Error approving pitch: " + error.message);
-            });
-        }
-        
-        // Function to reject a pitch
-        function rejectPitch(pitchId) {
-            console.log("Rejecting pitch:", pitchId);
-            
-            fetch('/reject_pitch', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: pitchId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Rejection response:", data);
-                alert(data.message);
-                // Reload pitches after rejection
-                loadPitches(document.getElementById("filter").value);
-            })
-            .catch(error => {
-                console.error("Error rejecting pitch:", error);
-                alert("Error rejecting pitch: " + error.message);
-            });
-        }
-        
-        // Set up filter change event
-        document.getElementById("filter").addEventListener('change', function(e) {
-            console.log("Filter changed to:", e.target.value);
-            loadPitches(e.target.value);
+        row.innerHTML = `
+            <td>${deal.id}</td>
+            <td>${deal.investor || 'Unknown'}</td>
+            <td>${deal.pitcher || 'Unknown'}</td>
+            <td>${deal.status}</td>
+            ${actionCell}
+        `;
+        tableBody.appendChild(row);
+    });
+    
+    // Add event listeners to buttons
+    document.querySelectorAll('.btn-approve').forEach(btn => {
+        btn.addEventListener('click', approveDeal);
+    });
+    
+    document.querySelectorAll('.btn-reject').forEach(btn => {
+        btn.addEventListener('click', rejectDeal);
+    });
+}
+
+// Deal approval function
+async function approveDeal(event) {
+    const dealId = event.target.getAttribute('data-deal-id');
+    try {
+        const response = await fetch('/approve_deal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ deal_id: dealId })
         });
         
-        // Initialize - load all pitches when page loads
-        window.onload = function() {
-            console.log("Page loaded");
-            loadPitches('All');
-        };
-    </script>
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.message || 'Approval failed');
+        }
+        
+        alert(result.message);
+        loadDeals(document.getElementById("filter").value);
+    } catch (error) {
+        console.error("Error approving deal:", error);
+        alert(`Error: ${error.message}`);
+    }
+}
+
+// Deal rejection function
+async function rejectDeal(event) {
+    const dealId = event.target.getAttribute('data-deal-id');
+    try {
+        const response = await fetch('/reject_deal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ deal_id: dealId })
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.message || 'rejection failed');
+        }
+        alert(result.message);
+        loadDeals(document.getElementById("filter").value);
+    } catch (error) {
+        console.error("Error approving deal:", error);
+        alert(`Error: ${error.message}`);
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    // Set up filter change listener
+    document.getElementById('filter').addEventListener('change', (e) => {
+        loadDeals(e.target.value);
+    });
+    
+    // Load initial deals
+    loadDeals('All');
+    
+    // Debug output
+    console.log('Monitor Deals page initialized');
+});
+
+           
+
+</script>
+</head>
+<body>
+
+<h2>Monitor Deals</h2>
+
+<div class="filter-container">
+    <label for="filter">Filter by Status:</label>
+    <select id="filter" onchange="loadDeals()">
+        <option value="All">All</option>
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+    </select>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Investor</th>
+            <th>Pitcher</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="dealsTableBody">
+        <!-- Deals will be loaded here dynamically -->
+        <tr><td colspan="5">Loading deals...</td></tr>
+    </tbody>
+</table>
+
+<a href="{{ url_for('admin_dashboard') }}">
+    <button class="btn-back">⬅ Back to Dashboard</button>
+</a>
+
 </body>
 </html>
