@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor Deals</title>
+    <title>Pitch Verification</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -85,61 +85,13 @@
             background: #5a6268;
         }
     </style>
-    <script>
-        // Simulating API response (List of Deals)
-        let deals = [
-            [1, "John Doe", "Sarah Smith", "Pending"],
-            [2, "Michael Brown", "Emma Davis", "Approved"],
-            [3, "David Wilson", "Olivia Taylor", "Pending"],
-            [4, "James Anderson", "Sophia Martinez", "Rejected"]
-        ];
-
-        function loadDeals(filter = "All") {
-            let tableBody = document.getElementById("dealTableBody");
-            tableBody.innerHTML = "";  // Clear previous data
-
-            deals.forEach((deal, index) => {
-                if (filter === "All" || deal[3] === filter) {
-                    let actionButtons = deal[3] === "Pending" ? `
-                        <button class="btn btn-approve" onclick="approveDeal(${index})">Approve</button>
-                        <button class="btn btn-reject" onclick="rejectDeal(${index})">Reject</button>
-                    ` : `<span>${deal[3]}</span>`;
-
-                    let row = `<tr>
-                        <td>${deal[0]}</td>
-                        <td>${deal[1]}</td>
-                        <td>${deal[2]}</td>
-                        <td>${actionButtons}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
-                }
-            });
-        }
-
-        function approveDeal(index) {
-            deals[index][3] = "Approved"; // Change status
-            loadDeals(document.getElementById("filter").value);
-        }
-
-        function rejectDeal(index) {
-            deals[index][3] = "Rejected"; // Change status
-            loadDeals(document.getElementById("filter").value);
-        }
-
-        function goBack() {
-            window.location.href = "admin_dashboard.html"; // Change to actual dashboard page
-        }
-
-        window.onload = () => loadDeals();  // Load deals on page load
-    </script>
 </head>
 <body>
-
-    <h2>Monitor Deals</h2>
+    <h2>Pitch Verification</h2>
 
     <div class="filter-container">
         <label for="filter">Filter by Status:</label>
-        <select id="filter" onchange="loadDeals(this.value)">
+        <select id="filter">
             <option value="All">All</option>
             <option value="Pending">Pending</option>
             <option value="Approved">Approved</option>
@@ -152,16 +104,137 @@
             <tr>
                 <th>ID</th>
                 <th>Pitcher</th>
-                <th>Investor</th>
+                <th>Pitch Idea</th>
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody id="dealTableBody">
-            <!-- Deals will be loaded here dynamically -->
+        <tbody id="pitchTableBody">
+            <!-- Pitches will be loaded here dynamically -->
+            <tr><td colspan="4">Loading pitches...</td></tr>
         </tbody>
     </table>
-    <a href="Admin.html">
-    <button>⬅ Back to Dashboard</button>
+
+    <a href="/admin_dashboard">
+        <button class="btn-back">⬅ Back to Dashboard</button>
     </a>
+
+    <script>
+        // Function to load pitches from server
+        function loadPitches(filterStatus) {
+            console.log("Loading pitches with filter:", filterStatus);
+            
+            fetch('/pitches_to_verify?filter=' + filterStatus)
+                .then(response => {
+                    console.log("Response status:", response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Received data:", data);
+                    renderPitches(data.pitches);
+                })
+                .catch(error => {
+                    console.error("Error fetching pitches:", error);
+                    document.getElementById("pitchTableBody").innerHTML = 
+                        `<tr><td colspan="4">Error loading pitches: ${error.message}</td></tr>`;
+                });
+        }
+        
+        // Function to render pitches in the table
+        function renderPitches(pitches) {
+            console.log("Rendering", pitches ? pitches.length : 0, "pitches");
+            
+            const tableBody = document.getElementById("pitchTableBody");
+            tableBody.innerHTML = "";
+            
+            if (!pitches || pitches.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4">No pitches found</td></tr>';
+                return;
+            }
+            
+            for (const pitch of pitches) {
+                const row = document.createElement('tr');
+                
+                let actionCell;
+                if (pitch.status === 'Pending') {
+                    actionCell = `
+                        <td>
+                            <button class="btn btn-approve" onclick="approvePitch(${pitch.id})">Approve</button>
+                            <button class="btn btn-reject" onclick="rejectPitch(${pitch.id})">Reject</button>
+                        </td>
+                    `;
+                } else {
+                    actionCell = `<td>${pitch.status}</td>`;
+                }
+                
+                row.innerHTML = `
+                    <td>${pitch.id}</td>
+                    <td>${pitch.pitcher || 'Unknown'}</td>
+                    <td>${pitch.title || 'No title'}</td>
+                    ${actionCell}
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+        
+        // Function to approve a pitch
+        function approvePitch(pitchId) {
+            console.log("Approving pitch:", pitchId);
+            
+            fetch('/approve_pitch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: pitchId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Approval response:", data);
+                alert(data.message);
+                // Reload pitches after approval
+                loadPitches(document.getElementById("filter").value);
+            })
+            .catch(error => {
+                console.error("Error approving pitch:", error);
+                alert("Error approving pitch: " + error.message);
+            });
+        }
+        
+        // Function to reject a pitch
+        function rejectPitch(pitchId) {
+            console.log("Rejecting pitch:", pitchId);
+            
+            fetch('/reject_pitch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: pitchId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Rejection response:", data);
+                alert(data.message);
+                // Reload pitches after rejection
+                loadPitches(document.getElementById("filter").value);
+            })
+            .catch(error => {
+                console.error("Error rejecting pitch:", error);
+                alert("Error rejecting pitch: " + error.message);
+            });
+        }
+        
+        // Set up filter change event
+        document.getElementById("filter").addEventListener('change', function(e) {
+            console.log("Filter changed to:", e.target.value);
+            loadPitches(e.target.value);
+        });
+        
+        // Initialize - load all pitches when page loads
+        window.onload = function() {
+            console.log("Page loaded");
+            loadPitches('All');
+        };
+    </script>
 </body>
 </html>

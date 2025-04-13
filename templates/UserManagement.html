@@ -74,47 +74,93 @@
             background: #5a6268;
         }
     </style>
-    <script>
-        // Simulating API response (List of Lists)
-        let pendingUsers = [
-            [1, "John Doe", "Pitcher"],
-            [2, "Sarah Smith", "Investor"],
-        ];
+<script>
+//Global variable to store users
+let currentUsers = [];
 
-        function loadUsers() {
-            let tableBody = document.getElementById("userTableBody");
-            tableBody.innerHTML = "";  // Clear previous data
+async function loadUsers() {
+    try {
+        const response = await fetch('/pending_users');
+        if (!response.ok) throw new Error('Failed to load users');
+        
+        const data = await response.json();
+        currentUsers = data.pending_users; // Store users globally
+        renderUsers();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to load users. Please try again.');
+    }
+}
 
-            pendingUsers.forEach((user, index) => {
-                let row = `<tr>
-                    <td>${user[0]}</td>
-                    <td>${user[1]}</td>
-                    <td>${user[2]}</td>
-                    <td>
-                        <button class="btn btn-verify" onclick="verifyUser(${index})">Verify</button>
-                        <button class="btn btn-reject" onclick="rejectUser(${index})">Reject</button>
-                    </td>
-                </tr>`;
-                tableBody.innerHTML += row;
-            });
-        }
+function renderUsers() {
+    const tableBody = document.getElementById("userTableBody");
+    tableBody.innerHTML = "";
+    
+    currentUsers.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.role}</td>
+            <td>
+                <button class="btn btn-verify" data-user-id="${user.id}">Verify</button>
+                <button class="btn btn-reject" data-user-id="${user.id}">Reject</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+    
+    // Add event listeners
+    document.querySelectorAll('.btn-verify').forEach(btn => {
+        btn.addEventListener('click', handleVerify);
+    });
+    
+    document.querySelectorAll('.btn-reject').forEach(btn => {
+        btn.addEventListener('click', handleReject);
+    });
+}
 
-        function verifyUser(index) {
-            pendingUsers.splice(index, 1); // Remove user from list
-            loadUsers(); // Refresh table
-        }
+async function handleVerify(event) {
+    const userId = event.target.getAttribute('data-user-id');
+    await updateUserStatus(userId, 'verify');
+}
 
-        function rejectUser(index) {
-            pendingUsers.splice(index, 1); // Remove user from list
-            loadUsers(); // Refresh table
-        }
-        window.onload = loadUsers;  // Load users when page loads
-    </script>
+async function handleReject(event) {
+    const userId = event.target.getAttribute('data-user-id');
+    await updateUserStatus(userId, 'reject');
+}
+
+async function updateUserStatus(userId, action) {
+    try {
+        const endpoint = action === 'verify' ? '/verify_user' : '/reject_user';
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_id: parseInt(userId) })
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok) throw new Error(result.message || 'Action failed');
+        
+        alert(result.message);
+        await loadUsers(); // Refresh the user list
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+    }
+}
+
+// Initialize when page loads
+window.addEventListener('DOMContentLoaded', loadUsers);
+</script>
 </head>
 <body>
-
     <h2>Pending User Verifications</h2>
-
     <table>
         <thead>
             <tr>
@@ -128,8 +174,8 @@
             <!-- Users will be loaded here dynamically -->
         </tbody>
     </table>
-    <a href="Admin.html">
-    <button>⬅ Back to Dashboard</button>
+    <a href="/admin_dashboard">
+        <button class="btn-back">⬅ Back to Dashboard</button>
     </a>
 </body>
 </html>

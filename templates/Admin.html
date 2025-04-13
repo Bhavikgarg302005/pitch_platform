@@ -6,14 +6,13 @@
     <title>Admin Dashboard</title>
     <style>
         a {
-    text-decoration: none;
-    color: rgb(235, 235, 235); /* Default color */
-}
+            text-decoration: none;
+            color: rgb(235, 235, 235); /* Default color */
+        }
 
-a:visited {
-    color: #fbfbfb; /* Ensures visited links stay black */
-}
-
+        a:visited {
+            color: #fbfbfb; /* Ensures visited links stay black */
+        }
 
         body {
             display: flex;
@@ -21,7 +20,6 @@ a:visited {
             background-color: #f8f9fa;
             margin: 0;
         }
-
         /* Sidebar Styles */
         .sidebar {
             width: 250px;
@@ -113,17 +111,17 @@ a:visited {
     <div class="sidebar">
         <ul>
             <li>Dashboard</li>
-            <a href="UserManagement.html">
+            <a href="{{ url_for('user_management') }}">
                 <li>User Management</li>
             </a>
-            <a href="PitchVerification.html">
-            <li>Pitch Verification</li>
+            <a href="{{ url_for('pitch_verification') }}">
+                <li>Pitch Verification</li>
             </a>
-            <a href="MonitorDeals.html">
-            <li>Deals Monitoring</li>
+            <a href="{{ url_for('monitor_deals_page') }}">
+                <li>Deals Monitoring</li>
             </a>
-            <a href="lyrics.html">
-            <li>Logout</li>
+            <a href="{{ url_for('logout') }}">
+                <li>Logout</li>
             </a>
         </ul>
     </div>
@@ -133,22 +131,27 @@ a:visited {
         
         <!-- Stats Section -->
         <div class="stats-container">
+            <!-- Total Users -->
             <div class="stat-box" onclick="toggleDetails('totalUsersDetails')">
                 <h3>Total Users</h3>
                 <div class="details" id="totalUsersDetails">
-                    <p>24,521</p>
+                    <p>{{ total_users }}</p>
                 </div>
             </div>
+
+            <!-- Pending Verifications -->
             <div class="stat-box" onclick="toggleDetails('pendingVerificationsDetails')">
                 <h3>Pending Verifications</h3>
                 <div class="details" id="pendingVerificationsDetails">
-                    <p>156</p>
+                    <p>{{ pending_verifications }}</p>
                 </div>
             </div>
+
+            <!-- Finalized Deals -->
             <div class="stat-box" onclick="toggleDetails('finalizedDealsDetails')">
                 <h3>Finalized Deals</h3>
                 <div class="details" id="finalizedDealsDetails">
-                    <p>89</p>
+                    <p>{{ finalized_deals }}</p>
                 </div>
             </div>
         </div>

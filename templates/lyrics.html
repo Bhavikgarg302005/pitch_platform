@@ -63,10 +63,11 @@
         <div class="welcome-text">Welcome to E-SharkTank</div>
         <div class="sub-text">Where innovation meets investment</div>
         <div class="auth-buttons">
-        <a href="Signup.html">
+        <!-- Update href to point to Flask routes -->
+        <a href="{{ url_for('signup') }}">
             <button>Signup</button>
         </a>
-        <a  href="login.html">
+        <a href="{{ url_for('login') }}">
             <button>Login</button>
         </a>
         </div>
