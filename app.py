@@ -1,9 +1,34 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, jsonify
+from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,session
 import os
+from flask_sqlalchemy import SQLAlchemy
+import mysql.connector
+import pymysql
 
 app = Flask(__name__)
+
+# Config
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Bhavikgarg%4030@localhost:3306/SharkTank6'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.urandom(24)
 
+# DB
+db = SQLAlchemy(app)
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'Bhavikgarg%4030',
+    'database': 'SharkTank6'
+}
+def get_db_connection():
+    return pymysql.connect(**db_config)
+# Models
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+
+# Create tables inside app context
+with app.app_context():
+    db.create_all()
 # Mock databases
 pitches_db = [
     {'id': 1, 'pitcher': 'Pitcher 1', 'title': 'Pitch 1', 'status': 'Pending'},
@@ -17,11 +42,14 @@ deals_db = [
     {"id": 3, "investor": "Investor 3", "pitcher": "Pitcher 3", "status": "Rejected"},
 ]
 
-pending_users_db = [
-    {'id': 1, 'name': 'User 1', 'role': 'Investor', 'status': 'pending'},
-    {'id': 2, 'name': 'User 2', 'role': 'Pitcher', 'status': 'pending'},
-    {'id': 3, 'name': 'User 3', 'role': 'Audience', 'status': 'pending'}
-]
+def get_db_connection():
+    return pymysql.connect(
+        host='localhost',
+        user='root',
+        password='Bhavikgarg30',
+        database='SharkTank6',
+        cursorclass=pymysql.cursors.DictCursor
+    )
 
 @app.route('/')
 def home():
@@ -35,16 +63,44 @@ def login():
 def signup():
     return render_template('signup.html')
 
+
 @app.route('/admin_login', methods=['POST'])
 def admin_login():
     email = request.form['email']
     password = request.form['password']
-    # Process the login for admin
-    if email == 'bhavik@gmail.com':
-        return render_template('Admin.html')
-    else:
-        flash('Invalid email or password!', 'error')
+    
+    conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+    )
+    cursor = conn.cursor()
+    try:
+        query = "SELECT * FROM Admin WHERE Email = %s AND Password_ = %s"
+        cursor.execute(query, (email, password))
+        admin = cursor.fetchone()
+
+        if admin:
+            session['admin_id'] = admin['UserId']
+            session['admin_email'] = admin['Email']
+            return render_template('Admin.html', admin=admin)
+        else:
+            flash('Invalid email or password!', 'error')
+            return render_template('login.html')
+
+    except mysql.connector.Error as err:
+        print("Database error:", err)
+        flash('Something went wrong. Please try again later.', 'error')
         return render_template('login.html')
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None:
+            conn.close()
 
 @app.route('/pitcher_login', methods=['POST'])
 def pitcher_login():
@@ -207,35 +263,84 @@ def reject_deal():
 
 @app.route('/pending_users')
 def get_pending_users():
-    pending_users = [user for user in pending_users_db if user['status'] == 'pending']
-    print("Current pending users:", pending_users)  # Debug print
-    return jsonify({'pending_users': pending_users})
+    try:
+        conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+        )
+        cursor = conn.cursor()
+        cursor.execute("""
+                SELECT 
+                    UserId as id,
+                    CONCAT(FirstName, ' ', IFNULL(LastName, '')) as name,
+                    Phone_Num as phone,
+                    CONCAT(Day_DOB, '/', Month_DOB, '/', Year_DOB) as dob,
+                    Gender,
+                    Is_Authenticated
+                FROM Audience 
+                WHERE Is_Authenticated = 0
+            """)
+        users = cursor.fetchall()
+        return jsonify({'pending_users': users, 'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
 
 @app.route('/verify_user', methods=['POST'])
 def verify_user():
-    data = request.get_json()
-    user_id = data.get('user_id')
-    
-    # Update user status in our "database"
-    for user in pending_users_db:
-        if user['id'] == user_id:
-            user['status'] = 'verified'
-            break
-    
-    return jsonify({'status': 'success', 'message': f'User {user_id} verified'})
+    return update_user_status(request.json.get('user_id'), True)
 
 @app.route('/reject_user', methods=['POST'])
 def reject_user():
-    data = request.get_json()
-    user_id = data.get('user_id')
+    return update_user_status(request.json.get('user_id'), False)
+
+def update_user_status(user_id, is_verified):
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'User ID required'}), 400
     
-    # Update user status in our "database"
-    for user in pending_users_db:
-        if user['id'] == user_id:
-            user['status'] = 'rejected'
-            break
-    
-    return jsonify({'status': 'success', 'message': f'User {user_id} rejected'})
+    try:
+            conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+           )
+            cursor = conn.cursor()
+        
+            if is_verified:
+                cursor.execute("""
+                    UPDATE Audience 
+                    SET Is_Authenticated = 1 
+                    WHERE UserId = %s
+                """, (user_id,))
+                message = f"User {user_id} verified successfully"
+            else:
+                cursor.execute("""
+                    DELETE FROM Audience 
+                    WHERE UserId = %s AND Is_Authenticated = 0
+                """, (user_id,))
+                message = f"User {user_id} rejected successfully"
+            
+            conn.commit()
+            affected_rows = cursor.rowcount
+            
+            if affected_rows == 0:
+                return jsonify({'status': 'error', 'message': 'User not found or already processed'}), 404
+            
+            return jsonify({'status': 'success', 'message': message})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -99,6 +99,7 @@ function renderUsers() {
     
     currentUsers.forEach(user => {
         const row = document.createElement('tr');
+        row.id = `user-${user.id}`; // Add an ID to easily reference the row
         row.innerHTML = `
             <td>${user.id}</td>
             <td>${user.name}</td>
@@ -147,7 +148,9 @@ async function updateUserStatus(userId, action) {
         if (!response.ok) throw new Error(result.message || 'Action failed');
         
         alert(result.message);
-        await loadUsers(); // Refresh the user list
+                // Remove the verified/rejected user from currentUsers array and update the UI
+                currentUsers = currentUsers.filter(user => user.id !== parseInt(userId));
+        renderUsers(); // Update the UI with the remaining users
         
     } catch (error) {
         console.error('Error:', error);
@@ -171,11 +174,141 @@ window.addEventListener('DOMContentLoaded', loadUsers);
             </tr>
         </thead>
         <tbody id="userTableBody">
-            <!-- Users will be loaded here dynamically -->
-        </tbody>
+            Users will be loaded here dynamically -->
+        <!-- </tbody>
     </table>
     <a href="/admin_dashboard">
         <button class="btn-back">⬅ Back to Dashboard</button>
     </a>
+</body>
+</html> --> 
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pending User Verifications</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+        .btn { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-verify { background-color: #4CAF50; color: white; }
+        .btn-reject { background-color: #f44336; color: white; margin-left: 8px; }
+        .btn-back { background-color: #2196F3; color: white; padding: 10px 15px; }
+        .user-photo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <h2>Pending User Verifications</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Date of Birth</th>
+                <th>Gender</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- Users will be loaded here dynamically -->
+        </tbody>
+    </table>
+    <a href="/admin_dashboard">
+        <button class="btn btn-back">⬅ Back to Dashboard</button>
+    </a>
+
+    <script>
+        let currentUsers = [];
+
+        async function loadUsers() {
+            try {
+                const response = await fetch('/pending_users');
+                if (!response.ok) throw new Error('Failed to load users');
+                
+                const data = await response.json();
+                if (data.status === 'error') throw new Error(data.message);
+                
+                currentUsers = data.pending_users;
+                renderUsers();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message);
+            }
+        }
+
+        function renderUsers() {
+            const tableBody = document.getElementById("userTableBody");
+            tableBody.innerHTML = currentUsers.length ? "" : "<tr><td colspan='6'>No pending users</td></tr>";
+            
+            currentUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.id = `user-${user.id}`;
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.name || 'N/A'}</td>
+                    <td>${user.phone || 'N/A'}</td>
+                    <td>${user.dob || 'N/A'}</td>
+                    <td>${user.gender || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-verify" data-user-id="${user.id}">Verify</button>
+                        <button class="btn btn-reject" data-user-id="${user.id}">Reject</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.btn-verify').forEach(btn => {
+                btn.addEventListener('click', handleVerify);
+            });
+            
+            document.querySelectorAll('.btn-reject').forEach(btn => {
+                btn.addEventListener('click', handleReject);
+            });
+        }
+
+        async function handleUserAction(userId, endpoint) {
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok || result.status === 'error') {
+                    throw new Error(result.message || 'Action failed');
+                }
+                
+                alert(result.message);
+                currentUsers = currentUsers.filter(user => user.id !== userId);
+                renderUsers();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message);
+            }
+        }
+
+        function handleVerify(event) {
+            const userId = parseInt(event.target.getAttribute('data-user-id'));
+            handleUserAction(userId, '/verify_user');
+        }
+
+        function handleReject(event) {
+            const userId = parseInt(event.target.getAttribute('data-user-id'));
+            handleUserAction(userId, '/reject_user');
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
 </body>
 </html>
