@@ -2,77 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor Deals</title>
+    <title>All Finalized Deals</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            padding: 20px;
-            text-align: center;
+            padding: 30px;
+            background-color: #f9f9f9;
         }
-
         h2 {
             margin-bottom: 20px;
+            text-align: center;
         }
-        .filter-container {
-            margin-bottom: 15px;
-        }
-
-        select {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
         th, td {
             padding: 12px;
-            text-align: left;
             border-bottom: 1px solid #ddd;
+            text-align: center;
         }
-
         th {
-            background: #007bff;
-            color: white;
+            background-color: #f1f1f1;
         }
-
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 5px;
+        tr:hover {
+            background-color: #f5f5f5;
         }
-
-        .btn-approve {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-approve:hover {
-            background: #218838;
-        }
-
-        .btn-reject {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-reject:hover {
-            background: #c82333;
-        }
-
         .btn-back {
             margin-top: 20px;
             background: #6c757d;
@@ -84,168 +41,54 @@
             background: #5a6268;
         }
     </style>
-   <script>
-async function loadDeals(filterStatus = 'All') {
-    try {
-        console.log("Loading deals with filter:", filterStatus);
-        const response = await fetch(`/monitor_deals?filter=${filterStatus}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log("Received deals data:", data);
-        renderDeals(data.deals);
-    } catch (error) {
-        console.error("Error loading deals:", error);
-        document.getElementById("dealsTableBody").innerHTML = 
-            `<tr><td colspan="5">Error loading deals: ${error.message}</td></tr>`;
-    }
-}
-
-// Function to render deals in the table
-function renderDeals(deals) {
-    const tableBody = document.getElementById("dealsTableBody");
-    tableBody.innerHTML = "";
-    
-    if (!deals || deals.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5">No deals found</td></tr>';
-        return;
-    }
-    
-    deals.forEach(deal => {
-        const row = document.createElement('tr');
-        
-        let actionCell;
-        if (deal.status === 'Pending') {
-            actionCell = `
-                <td>
-                    <button class="btn btn-approve" data-deal-id="${deal.id}">Approve</button>
-                    <button class="btn btn-reject" data-deal-id="${deal.id}">Reject</button>
-                </td>
-            `;
-        } else {
-            actionCell = `<td>${deal.status}</td>`;
-        }
-        
-        row.innerHTML = `
-            <td>${deal.id}</td>
-            <td>${deal.investor || 'Unknown'}</td>
-            <td>${deal.pitcher || 'Unknown'}</td>
-            <td>${deal.status}</td>
-            ${actionCell}
-        `;
-        tableBody.appendChild(row);
-    });
-    
-    // Add event listeners to buttons
-    document.querySelectorAll('.btn-approve').forEach(btn => {
-        btn.addEventListener('click', approveDeal);
-    });
-    
-    document.querySelectorAll('.btn-reject').forEach(btn => {
-        btn.addEventListener('click', rejectDeal);
-    });
-}
-
-// Deal approval function
-async function approveDeal(event) {
-    const dealId = event.target.getAttribute('data-deal-id');
-    try {
-        const response = await fetch('/approve_deal', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ deal_id: dealId })
-        });
-        
-        const result = await response.json();
-        if (!response.ok) {
-            throw new Error(result.message || 'Approval failed');
-        }
-        
-        alert(result.message);
-        loadDeals(document.getElementById("filter").value);
-    } catch (error) {
-        console.error("Error approving deal:", error);
-        alert(`Error: ${error.message}`);
-    }
-}
-
-// Deal rejection function
-async function rejectDeal(event) {
-    const dealId = event.target.getAttribute('data-deal-id');
-    try {
-        const response = await fetch('/reject_deal', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ deal_id: dealId })
-        });
-        const result = await response.json();
-        if (!response.ok) {
-            throw new Error(result.message || 'rejection failed');
-        }
-        alert(result.message);
-        loadDeals(document.getElementById("filter").value);
-    } catch (error) {
-        console.error("Error approving deal:", error);
-        alert(`Error: ${error.message}`);
-    }
-}
-document.addEventListener('DOMContentLoaded', () => {
-    // Set up filter change listener
-    document.getElementById('filter').addEventListener('change', (e) => {
-        loadDeals(e.target.value);
-    });
-    
-    // Load initial deals
-    loadDeals('All');
-    
-    // Debug output
-    console.log('Monitor Deals page initialized');
-});
-
-           
-
-</script>
 </head>
 <body>
 
-<h2>Monitor Deals</h2>
+    <h2>All Finalized Deals</h2>
 
-<div class="filter-container">
-    <label for="filter">Filter by Status:</label>
-    <select id="filter" onchange="loadDeals()">
-        <option value="All">All</option>
-        <option value="Pending">Pending</option>
-        <option value="Approved">Approved</option>
-        <option value="Rejected">Rejected</option>
-    </select>
-</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Investor</th>
+                <th>Pitcher</th>
+                <th>Valuation</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="dealsTableBody">
+            <!-- Deals will be populated here -->
+        </tbody>
+    </table>
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Investor</th>
-            <th>Pitcher</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody id="dealsTableBody">
-        <!-- Deals will be loaded here dynamically -->
-        <tr><td colspan="5">Loading deals...</td></tr>
-    </tbody>
-</table>
+    <script>
+        async function loadDeals() {
+            try {
+                const response = await fetch('/monitor_deals');
+                const data = await response.json();
 
-<a href="{{ url_for('admin_dashboard') }}">
-    <button class="btn-back">⬅ Back to Dashboard</button>
-</a>
+                const tbody = document.getElementById('dealsTableBody');
+                tbody.innerHTML = '';
 
+                data.deals.forEach(deal => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${deal.investor}</td>
+                        <td>${deal.pitcher}</td>
+                        <td>${deal.valuation}</td>
+                        <td>${deal.status}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Failed to load deals:', error);
+            }
+        }
+
+        // Load on page load
+        loadDeals();
+    </script>
+    <a href="{{ url_for('admin_dashboard') }}">
+        <button class="btn-back">⬅ Back to Dashboard</button>
+    </a>
 </body>
 </html>

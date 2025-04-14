@@ -21,26 +21,15 @@ db_config = {
 }
 def get_db_connection():
     return pymysql.connect(**db_config)
-# Models
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
 
-# Create tables inside app context
+
 with app.app_context():
     db.create_all()
-# Mock databases
-pitches_db = [
-    {'id': 1, 'pitcher': 'Pitcher 1', 'title': 'Pitch 1', 'status': 'Pending'},
-    {'id': 2, 'pitcher': 'Pitcher 2', 'title': 'Pitch 2', 'status': 'Pending'},
-    {'id': 3, 'pitcher': 'Pitcher 3', 'title': 'Pitch 3', 'status': 'Pending'}
-]
-
-deals_db = [
-    {"id": 1, "investor": "Investor 1", "pitcher": "Pitcher 1", "status": "Pending"},
-    {"id": 2, "investor": "Investor 2", "pitcher": "Pitcher 2", "status": "Approved"},
-    {"id": 3, "investor": "Investor 3", "pitcher": "Pitcher 3", "status": "Rejected"},
-]
 
 def get_db_connection():
     return pymysql.connect(
@@ -63,6 +52,46 @@ def login():
 def signup():
     return render_template('signup.html')
 
+@app.route('/audience_signup', methods=['POST'])
+def audience_signup():
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    phone = request.form['phone']
+    day = int(request.form['day'])
+    month = int(request.form['month'])
+    year = int(request.form['year'])
+    gender = request.form['gender']
+    conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+    )
+    cursor=conn.cursor()
+    cursor3=conn.cursor()
+    query="select count(*) as count from Audience"
+    cursor3.execute(query)
+    user_id=cursor3.fetchone()['count']+3
+    cursor2 = conn.cursor()
+    query2 = """
+        INSERT INTO Audience (
+            UserId, FirstName, LastName, Phone_Num, 
+            Day_DOB, Month_DOB, Year_DOB, Gender
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    """
+    cursor2.execute(query2,(user_id,first_name,last_name,phone,day,month,year,gender))
+
+    query3 = "SELECT * FROM Audience WHERE FirstName = %s "
+    cursor2.execute(query3, (first_name))
+    audience = cursor2.fetchone()
+    session['audienceId'] = audience['UserId']
+    return render_template('dash.html', audience=audience)
+    cursor.execute(query, values)
+    mysql.connection.commit()
+    cursor.close()
 
 @app.route('/admin_login', methods=['POST'])
 def admin_login():
@@ -105,31 +134,188 @@ def admin_login():
 @app.route('/pitcher_login', methods=['POST'])
 def pitcher_login():
     email = request.form['email']
-    password = request.form['password']
-    # Process the login for pitcher
-    return f"Pitcher logged in with email {email}"
+    if email.endswith('@gmail.com'):
+     username = email[:-10]  # Removes the last 10 characters: '@gmail.com'
+    else:
+        flash('Invalid email or password!', 'error')
+        return render_template('login.html')
+     
+    conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+    )
+    cursor = conn.cursor()
+    try:
+        query = "SELECT * FROM Audience inner join Pitcher on Audience.UserId=Pitcher.PitcherID WHERE FirstName = %s "
+        cursor.execute(query, (username))
+        pitcher = cursor.fetchone()
+        if pitcher:
+            session['pitcher_id'] = pitcher['PitcherID']
+            return render_template('dash.html', pitcher=pitcher)
+        else:
+            flash('Invalid email or password!', 'error')
+            return render_template('login.html')
+
+    except mysql.connector.Error as err:
+        print("Database error:", err)
+        flash('Something went wrong. Please try again later.', 'error')
+        return render_template('login.html')
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None:
+            conn.close()
+    
+
+
+@app.route('/finalized_pitches')
+def finalized_pitches():
+    try:
+        conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+        )
+        cursor = conn.cursor()
+
+        query = """
+SELECT 
+    p.PitchID AS Id,
+    a.FirstName AS PitcherName,
+    p.Title As title,
+    p.EquityOffered As equity_offered,
+    p.Valuation,
+    p.Description
+FROM 
+    Pitch p
+JOIN 
+    PitchesProposedByPitcher pp ON pp.PitchID = p.PitchID
+JOIN 
+    Pitcher pi ON pi.PitcherID = pp.PitcherID
+JOIN 
+    Audience a ON a.UserId = pi.PitcherID;
+        """
+
+        cursor.execute(query)
+        pitches = cursor.fetchall()
+
+        return jsonify({'pitches': pitches})
+
+    except Exception as e:
+        print(f"Error fetching finalized pitches: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
 
 @app.route('/investor_login', methods=['POST'])
 def investor_login():
     email = request.form['email']
-    password = request.form['password']
-    # Process the login for investor
-    return f"Investor logged in with email {email}"
+     
+    conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+    )
+    cursor = conn.cursor()
+    try:
+        query = "SELECT * FROM Audience inner join Investor on Audience.UserId=Investor.InvestorID WHERE Email = %s "
+        cursor.execute(query, (email))
+        investor = cursor.fetchone()
+        if investor:
+            session['investorId'] = investor['InvestorID']
+            return render_template('investor.html', investor=investor)
+        else:
+            flash('Invalid email or password!', 'error')
+            return render_template('login.html')
+
+    except mysql.connector.Error as err:
+        print("Database error:", err)
+        flash('Something went wrong. Please try again later.', 'error')
+        return render_template('login.html')
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None:
+            conn.close()
+    
 
 @app.route('/audience_login', methods=['POST'])
 def audience_login():
     email = request.form['email']
-    password = request.form['password']
-    # Process the login for audience
-    return f"Audience logged in with email {email}"
+    if email.endswith('@gmail.com'):
+     username = email[:-10]  # Removes the last 10 characters: '@gmail.com'
+    else:
+        flash('Invalid email or password!', 'error')
+        return render_template('login.html')
+     
+    conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+    )
+    cursor = conn.cursor()
+    try:
+        query = "SELECT * FROM Audience WHERE FirstName = %s "
+        cursor.execute(query, (username))
+        audience = cursor.fetchone()
+        if audience:
+            session['audienceId'] = audience['UserId']
+            return render_template('dash.html', audience=audience)
+        else:
+            flash('Invalid email or password!', 'error')
+            return render_template('login.html')
+
+    except mysql.connector.Error as err:
+        print("Database error:", err)
+        flash('Something went wrong. Please try again later.', 'error')
+        return render_template('login.html')
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None:
+            conn.close()
+    
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
     # Fetch these values from the database
-    total_users = 24521
-    pending_verifications = 156
-    finalized_deals = 89
-
+    conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+    )
+    cursor = conn.cursor()
+    cursor2=conn.cursor()
+    cursor3=conn.cursor()
+    query = "Select count(*) as count from Audience"
+    query2= "Select count(*) as count from Audience where Is_Authenticated=0"
+    query3="Select count(*) as count from Deals"
+    cursor.execute(query)
+    cursor2.execute(query2)
+    cursor3.execute(query3)
+    total_users = cursor.fetchone()['count']
+    pending_verifications = cursor2.fetchone()['count']
+    finalized_deals = cursor3.fetchone()['count']
     return render_template('Admin.html', 
                           total_users=total_users,
                           pending_verifications=pending_verifications,
@@ -152,114 +338,53 @@ def monitor_deals_page():
 @app.route('/monitor_deals')
 def monitor_deals():
     filter_status = request.args.get('filter', 'All')
-    filtered_deals = [d for d in deals_db if filter_status == 'All' or d['status'] == filter_status]
-    print(f"Sending {len(filtered_deals)} deals (filter: {filter_status})")  # Debug
-    return jsonify({'deals': filtered_deals})
+
+    try:
+        conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+        )
+        cursor = conn.cursor()
+        query="""
+            SELECT 
+                CONCAT(ai.FirstName) AS investor,
+                CONCAT(ap.FirstName) AS pitcher,
+                prop.Description AS valuation,
+                'Finalized' AS status
+            FROM Deals d
+            JOIN ProposalForPitchByInvestor prop ON d.Proposal_of_Deal = prop.Proposal
+            JOIN Investor i ON prop.InvestorID = i.InvestorID
+            JOIN Pitcher pit ON prop.PitcherID = pit.PitcherID
+            JOIN Audience ai ON i.InvestorID = ai.UserId
+            JOIN Audience ap ON pit.PitcherID = ap.UserId
+            JOIN Pitch p ON prop.PitchID = p.PitchID;
+        """
+        if filter_status != 'All':
+            query += " WHERE d.Status = %s"
+            cursor.execute(query, (filter_status,))
+        else:
+            cursor.execute(query)
+
+        deals = cursor.fetchall()
+        print(f"Fetched {len(deals)} deals from DB (filter: {filter_status})")  # Debug
+        return jsonify({'deals': deals})
+
+    except Exception as e:
+        print(f"Error fetching deals: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
 
 
 @app.route('/logout')
 def logout():
     # Add logout functionality here
     return redirect('/login')
-
-
-@app.route('/pitches_to_verify')
-def pitches_to_verify():
-    filter_status = request.args.get('filter', 'All')
-    
-    filtered_pitches = pitches_db
-    if filter_status != 'All':
-        filtered_pitches = [p for p in pitches_db if p['status'] == filter_status]
-    
-    print(f"Returning {len(filtered_pitches)} pitches with filter: {filter_status}")  # Debug print
-    return jsonify({
-        'pitches': filtered_pitches,
-        'message': 'Success',
-        'status': 200
-    })
-
-@app.route('/approve_pitch', methods=['POST'])
-def approve_pitch():
-    data = request.get_json()
-    pitch_id = data.get('id')
-    
-    # Update pitch status in database
-    for pitch in pitches_db:
-        if pitch['id'] == pitch_id:
-            pitch['status'] = 'Approved'
-            break
-    
-    return jsonify({'status': 'success', 'message': f'Pitch {pitch_id} approved'})
-
-@app.route('/reject_pitch', methods=['POST'])
-def reject_pitch():
-    data = request.get_json()
-    pitch_id = data.get('id')
-    
-    # Update pitch status in database
-    for pitch in pitches_db:
-        if pitch['id'] == pitch_id:
-            pitch['status'] = 'Rejected'
-            break
-    
-    return jsonify({'status': 'success', 'message': f'Pitch {pitch_id} rejected'})
-
-@app.route('/approve_deal', methods=['POST'])
-def approve_deal():
-    try:
-        data = request.get_json()
-        deal_id = data.get('deal_id')
-        
-        # Find and update deal
-        for deal in deals_db:
-            if deal['id'] == deal_id:
-                deal['status'] = 'Approved'
-                print(f"Deal {deal_id} approved")  # Debug
-                return jsonify({
-                    'status': 'success', 
-                    'message': f'Deal {deal_id} approved'
-                })
-        
-        return jsonify({
-            'status': 'error',
-            'message': 'Deal not found'
-        }), 404
-        
-    except Exception as e:
-        print(f"Error approving deal: {str(e)}")  # Debug
-        return jsonify({
-            'status': 'error',
-            'message': str(e)
-        }), 500
-
-
-@app.route('/reject_deal', methods=['POST'])
-def reject_deal():
-    try:
-        data = request.get_json()
-        deal_id = data.get('deal_id')
-        
-        # Find and update deal
-        for deal in deals_db:
-            if deal['id'] == deal_id:
-                deal['status'] = 'Rejected'
-                print(f"Deal {deal_id} rejected")  # Debug
-                return jsonify({
-                    'status': 'success', 
-                    'message': f'Deal {deal_id} rejected'
-                })
-        
-        return jsonify({
-            'status': 'error',
-            'message': 'Deal not found'
-        }), 404
-        
-    except Exception as e:
-        print(f"Error rejecting deal: {str(e)}")  # Debug
-        return jsonify({
-            'status': 'error',
-            'message': str(e)
-        }), 500
 
 @app.route('/pending_users')
 def get_pending_users():
@@ -303,44 +428,56 @@ def reject_user():
 def update_user_status(user_id, is_verified):
     if not user_id:
         return jsonify({'status': 'error', 'message': 'User ID required'}), 400
-    
+
     try:
-            conn = pymysql.connect(
+        conn = pymysql.connect(
             host='localhost',
             user='root',
-            password='Bhavikgarg@30',  # Plain text, no URL encoding
+            password='Bhavikgarg@30',
             database='SharkTank6',
             port=3306,
-            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
-           )
-            cursor = conn.cursor()
-        
-            if is_verified:
-                cursor.execute("""
-                    UPDATE Audience 
-                    SET Is_Authenticated = 1 
-                    WHERE UserId = %s
-                """, (user_id,))
-                message = f"User {user_id} verified successfully"
-            else:
-                cursor.execute("""
-                    DELETE FROM Audience 
-                    WHERE UserId = %s AND Is_Authenticated = 0
-                """, (user_id,))
-                message = f"User {user_id} rejected successfully"
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        cursor = conn.cursor()
+        cursor2 = conn.cursor()
+
+        if is_verified:
+            cursor.execute("""
+                UPDATE Audience 
+                SET Is_Authenticated = 1 
+                WHERE UserId = %s
+            """, (user_id,))
+
+            cursor2.execute("""
+                INSERT INTO Pitcher (PitcherID, Domain)
+                SELECT UserId, 'Ai based techs are mainly area of interest'
+                FROM Audience
+                WHERE UserId = %s
+                  AND Is_Authenticated = TRUE 
+                  AND UserId NOT IN (SELECT PitcherID FROM Pitcher) 
+                  AND UserId NOT IN (SELECT InvestorID FROM Investor)
+            """, (user_id,))
             
-            conn.commit()
-            affected_rows = cursor.rowcount
-            
-            if affected_rows == 0:
-                return jsonify({'status': 'error', 'message': 'User not found or already processed'}), 404
-            
-            return jsonify({'status': 'success', 'message': message})
+            message = f"User {user_id} verified successfully"
+
+        else:
+            # Optional: If you want to mark rejected users or delete, add logic here
+            message = f"User {user_id} rejected successfully"
+
+        conn.commit()  # Commit in both cases
+
+        # Check if user was actually updated
+        affected_rows = cursor.rowcount
+        if affected_rows == 0:
+            return jsonify({'status': 'error', 'message': 'User not found or already processed'}), 404
+
+        return jsonify({'status': 'success', 'message': message}), 200
+
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
     finally:
         if 'conn' in locals() and conn:
             conn.close()
-
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

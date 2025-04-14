@@ -80,49 +80,28 @@
         <select id="role-select" onchange="showForm()">
             <option value="">Select Role</option>
             <option value="audience">Audience</option>
-            <option value="pitcher">Pitcher</option>
-            <option value="investor">Investor</option>
         </select>
         
         <div id="audience-form" class="role-form">
             <h3>Audience Signup</h3>
-            <input type="text" placeholder="First Name">
-            <input type="text" placeholder="Last Name">
-            <input type="text" placeholder="Phone Number">
-            <input type="number" placeholder="Day of Birth">
-            <input type="number" placeholder="Month of Birth">
-            <input type="number" placeholder="Year of Birth">
-            <select>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-            </select>                                            
-            <button>Signup</button>
+            <form action="{{ url_for('audience_signup') }}" method="POST">
+                <input type="text" name="first_name" placeholder="First Name">
+                <input type="text" name="last_name" placeholder="Last Name">
+                <input type="text" name="phone" placeholder="Phone Number">
+                <input type="number" name="day" placeholder="Day of Birth">
+                <input type="number" name="month" placeholder="Month of Birth">
+                <input type="number" name="year" placeholder="Year of Birth">
+                <select name="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>                                            
+                <button type="submit">Signup</button>
+            </form>
         </div>
-        
-        <div id="pitcher-form" class="role-form">
-            <h3>Pitcher Signup</h3>
-            <input type="text" placeholder="First Name">
-            <input type="text" placeholder="Last Name">
-            <input type="email" placeholder="Email">
-            <input type="text" placeholder="Phone Number">
-            <input type="text" placeholder="Domain">
-            <button>Signup</button>
-        </div>
-        
-        <div id="investor-form" class="role-form">
-            <h3>Investor Signup</h3>
-            <input type="text" placeholder="First Name">
-            <input type="text" placeholder="Last Name">
-            <input type="email" placeholder="Email">
-            <input type="text" placeholder="Description">
-            <input type="text" placeholder="Expertise">
-            <input type="text" placeholder="Location">
-            <input type="number" placeholder="Popularity Score">
-            <button>Signup</button>
-        </div>
-        
-        <button class="back-button" onclick="goBack()">Back</button>
+        <a href="{{ url_for('home') }}">
+            <button class="back-button">Back</button>
+        </a>
     </div>
 </body>
 </html>

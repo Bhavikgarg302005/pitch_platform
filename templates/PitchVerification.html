@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pitch Verification</title>
+    <title>All Finalized Pitches</title>
     <style>
-        /* Styles remain the same as in your original code */
         body {
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
@@ -15,17 +14,6 @@
 
         h2 {
             margin-bottom: 20px;
-        }
-
-        .filter-container {
-            margin-bottom: 15px;
-        }
-
-        select {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
         }
 
         table {
@@ -39,7 +27,7 @@
 
         th, td {
             padding: 12px;
-            text-align: left;
+            text-align: center;
             border-bottom: 1px solid #ddd;
         }
 
@@ -48,159 +36,25 @@
             color: white;
         }
 
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 5px;
-        }
-
-        .btn-approve {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-approve:hover {
-            background: #218838;
-        }
-
-        .btn-reject {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-reject:hover {
-            background: #c82333;
-        }
-
         .btn-back {
-            margin-top: 20px;
+            margin-top: 30px;
             background: #6c757d;
             color: white;
             padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
         }
 
         .btn-back:hover {
             background: #5a6268;
         }
     </style>
-     <script>
-     // Enhanced version with more debugging
-    function renderPitches(pitches) {
-     const tableBody = document.getElementById("pitchTableBody");
-     tableBody.innerHTML = "";
-    
-    if (!pitches || pitches.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="4">No pitches found</td></tr>';
-        return;
-    }
-    
-    pitches.forEach(pitch => {
-        const row = document.createElement('tr');
-        
-        let actionCell;
-        if (pitch.status === 'Pending') {
-            actionCell = `
-                <td>
-                    <button class="btn btn-approve" data-pitch-id="${pitch.id}">Approve</button>
-                    <button class="btn btn-reject" data-pitch-id="${pitch.id}">Reject</button>
-                </td>
-            `;
-        } else {
-            actionCell = `<td>${pitch.status}</td>`;
-        }
-        
-        row.innerHTML = `
-            <td>${pitch.id}</td>
-            <td>${pitch.pitcher || 'Unknown'}</td>
-            <td>${pitch.title || 'No title'}</td>
-            ${actionCell}
-        `;
-        tableBody.appendChild(row);
-    });
-    
-    // Add fresh event listeners
-    document.querySelectorAll('.btn-approve').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            const pitchId = e.target.getAttribute('data-pitch-id');
-            await updatePitchStatus(pitchId, 'approve');
-        });
-    });
-    
-    document.querySelectorAll('.btn-reject').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            const pitchId = e.target.getAttribute('data-pitch-id');
-            await updatePitchStatus(pitchId, 'reject');
-        });
-    });
-}
-
-async function updatePitchStatus(pitchId, action) {
-    try {
-        const endpoint = action === 'approve' ? '/approve_pitch' : '/reject_pitch';
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id: parseInt(pitchId) })
-        });
-        
-        const result = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(result.message || `${action} failed`);
-        }
-        
-        alert(result.message);
-        loadPitches(document.getElementById("filter").value);
-        
-    } catch (error) {
-        console.error(`Error in ${action} pitch:`, error);
-        alert(`Error: ${error.message}`);
-    }
-}
-async function loadPitches(filterStatus) {
-    try {
-        const response = await fetch(`/pitches_to_verify?filter=${filterStatus}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch pitches');
-        }
-        const data = await response.json();
-        console.log("Received pitches:", data.pitches); // Debug log
-        renderPitches(data.pitches);
-    } catch (error) {
-        console.error('Error loading pitches:', error);
-        document.getElementById("pitchTableBody").innerHTML = 
-            `<tr><td colspan="4">Error loading pitches: ${error.message}</td></tr>`;
-    }
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    loadPitches('All');
-    console.log("loadPitches called with filter:", filterStatus);
-    document.getElementById("filter").addEventListener('change', (e) => {
-        loadPitches(e.target.value);
-    });
-});
-    </script>
 </head>
 <body>
 
-    <h2>Pitch Verification</h2>
-
-    <div class="filter-container">
-        <label for="filter">Filter by Status:</label>
-        <select id="filter">
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
-        </select>
-    </div>
+    <h2>All Finalized Pitches</h2>
 
     <table>
         <thead>
@@ -208,17 +62,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 <th>ID</th>
                 <th>Pitcher</th>
                 <th>Pitch Idea</th>
-                <th>Action</th>
+                <th>Equity Offered (%)</th>
+                <th>Valuation ($)</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody id="pitchTableBody">
-            <!-- Pitches will be loaded here dynamically -->
+            <!-- Finalized pitches will be inserted here -->
         </tbody>
     </table>
 
     <a href="/admin_dashboard">
         <button class="btn-back">⬅ Back to Dashboard</button>
     </a>
+
+    <script>
+        async function loadFinalizedPitches() {
+            try {
+                const response = await fetch('/finalized_pitches');
+                const data = await response.json();
+
+                const tableBody = document.getElementById("pitchTableBody");
+                tableBody.innerHTML = '';
+
+                if (!data.pitches || data.pitches.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="6">No finalized pitches found</td></tr>';
+                    return;
+                }
+
+                data.pitches.forEach(pitch => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${pitch.Id}</td>
+                        <td>${pitch.PitcherName || 'Unknown'}</td>
+                        <td>${pitch.title || 'No title'}</td>
+                        <td>${pitch.equity_offered || '-'}</td>
+                        <td>${pitch.Valuation || '-'}</td>
+                        <td>${pitch.status || 'Finalized'}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error("Error loading finalized pitches:", error);
+                document.getElementById("pitchTableBody").innerHTML = 
+                    `<tr><td colspan="6">Error: ${error.message}</td></tr>`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadFinalizedPitches);
+    </script>
 
 </body>
 </html>
