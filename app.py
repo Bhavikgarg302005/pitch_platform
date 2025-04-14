@@ -481,3 +481,6 @@ def update_user_status(user_id, is_verified):
             conn.close()
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
+
+
+
