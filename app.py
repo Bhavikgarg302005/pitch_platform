@@ -642,7 +642,7 @@ def BackViewPitch():
 
 @app.route('/viewProfile')
 def ViewProfile():
-    return render_template('Profile_I.html',session=session)
+    return render_template('Profile_I.html',investor_id = session.get('investorId'))
 
 @app.route('/InvestorLogout')
 def InvestorLogout():
