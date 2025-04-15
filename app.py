@@ -237,7 +237,7 @@ def investor_login():
         investor = cursor.fetchone()
         if investor:
             session['investorId'] = investor['InvestorID']
-            return render_template('investor.html', investor=investor)
+            return render_template('HomePageI.html', investor=investor)# change made by ansh
         else:
             flash('Invalid email or password!', 'error')
             return render_template('login.html')
@@ -606,6 +606,122 @@ def logout_for_audience():
 @app.route('/faq')
 def faq():
     return render_template('faq.html')
+
+
+##START OF INVESTOR
+
+@app.route('/start_inv')#change 1
+def StartInv():#change 2
+    return render_template('HomePageI.html')
+
+@app.route('/ViewPitch')
+def ViewPitch():
+    return render_template('ViewPitchandAddPropI.html')
+
+@app.route('/addProposal')
+def AddProposal():
+    return render_template('addPropoI.html')
+
+@app.route('/ViewDeals')
+def ViewAllDeals():
+    return render_template('Acc_Deals_I.html')
+
+@app.route('/backToHome')
+def BackHome():
+    return render_template('HomePageI.html')
+
+@app.route('/backToView')
+def BackViewPitch():
+    return render_template('ViewPitchandAddPropI.html')
+
+@app.route('/viewProfile')
+def ViewProfile():
+    return render_template('Profile_I.html')
+
+@app.route('/InvestorLogout')
+def InvestorLogout():
+    return render_template('login.html')
+
+@app.route('/pitchDisp')
+def pitchDisp():
+
+    try:
+        connection = get_db_connection()
+        with connection.cursor() as cursor:
+            query = """
+                SELECT 
+                    t1.pitchid,
+                    t1.equityoffered,
+                    t1.popularityscore,
+                    t1.valuation,
+                    t1.description,
+                    t2.pitcherid
+                FROM pitch t1, pitchesproposedbypitcher t2
+                WHERE t1.pitchid = t2.pitchid;
+            """
+            cursor.execute(query)
+            pitch_data = cursor.fetchall()
+
+            # Calculate money demanded
+            for pitch in pitch_data:
+                pitch['moneydemanded'] = round((pitch['equityoffered'] * pitch['valuation']) / 100)
+
+        return render_template('ViewPitchandAddPropI.html', pitches=pitch_data)
+    except Exception as e:
+        print("Error:", e)
+        return "Something went wrong!"
+
+@app.route('/submit_proposal', methods=['POST'])
+def submit_proposal():
+    pitch_id = request.form['pitchId']
+    pitcher_id = request.form['pitcherId']
+    investor_id = request.form['investorId']
+    description = request.form['description']
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        query = """
+        INSERT INTO ProposalForPitchByInvestor (PitcherID, Description, InvestorID, PitchID)
+        VALUES (%s, %s, %s, %s)
+        """
+        cursor.execute(query, (pitcher_id, description, investor_id, pitch_id))
+        conn.commit()
+
+        flash("Proposal submitted successfully!", "success")
+        return redirect(url_for('StartInv'))#change3
+
+    except Exception as e:
+        print("Error inserting proposal:", e)
+        flash("Error submitting proposal. Try again.", "error")
+        return redirect(url_for('StartInv'))#change4
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+@app.route('/dispDeal')
+def dispDeal():
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = """
+                SELECT proposalforpitchbyinvestor.proposal AS proposalid,
+                       proposalforpitchbyinvestor.pitcherid,
+                       proposalforpitchbyinvestor.description,
+                       proposalforpitchbyinvestor.investorid,
+                       proposalforpitchbyinvestor.pitchid
+                FROM proposalforpitchbyinvestor, deals
+                WHERE proposalforpitchbyinvestor.proposal = deals.proposal_of_deal;
+            """
+            cursor.execute(query)
+            records = cursor.fetchall()
+    finally:
+        connection.close()
+    return render_template('Acc_Deals_I.html', deals=records)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
