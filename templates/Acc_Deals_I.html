@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accepted Proposals</title>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            secondary: '#10b981'
+          },
+          borderRadius: {
+            'none': '0px',
+            'sm': '4px',
+            DEFAULT: '8px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '20px',
+            '2xl': '24px',
+            '3xl': '32px',
+            'full': '9999px',
+            'button': '8px'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    :where([class^="ri-"])::before { content: "\f3c2"; }
+    body {
+      background-color: white;
+      color: black;
+      min-height: 100vh;
+    }
+    .proposal-card {
+      transition: all 0.2s ease;
+    }
+    .proposal-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900">
+  <div class="min-h-screen max-w-4xl mx-auto px-4 py-6">
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-4">
+        <!-- Back Button with routing -->
+        <a href="{{ url_for('BackHome') }}">
+          <button class="w-10 h-10 flex items-center justify-center text-gray-700 hover:text-primary rounded-full hover:bg-gray-100 !rounded-button">
+            <i class="ri-arrow-left-line ri-lg"></i>
+          </button>
+        </a>
+
+        <!-- View Button -->
+        <a href="{{ url_for('dispDeal') }}">
+          <button class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-button hover:bg-blue-700">
+            View
+          </button>
+        </a>
+      </div>
+
+      <h1 class="text-2xl font-semibold">Accepted Proposals</h1>
+
+      <!-- Removed logout button -->
+      <div class="text-sm text-gray-500">April 13, 2025</div>
+    </header>
+
+    <!-- Proposals List -->
+    <div class="space-y-4">
+      {% if deals %}
+        {% for deal in deals %}
+        <div class="proposal-card bg-gray-50 rounded-lg p-5 border border-gray-100 shadow-sm">
+          <div class="space-y-2 text-sm text-gray-700 leading-relaxed">
+            <p><span class="font-semibold">Proposal ID:</span> {{ deal.proposalid }}</p>
+            <p><span class="font-semibold">Pitch ID:</span> {{ deal.pitchid }}</p>
+            <p><span class="font-semibold">Pitcher ID:</span> {{ deal.pitcherid }}</p>
+            <p><span class="font-semibold">Investor ID:</span> {{ deal.investorid }}</p>
+            <p><span class="font-semibold">Description:</span> {{ deal.description }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-center text-gray-500">No accepted deals to display. Click "View" to load deals.</p>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>
