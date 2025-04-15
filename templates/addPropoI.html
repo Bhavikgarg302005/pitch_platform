@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Proposal</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#64748B'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        input, textarea {
+            background-color: #F5F5F5;
+            border: 1px solid #000000;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-white text-black min-h-screen">
+    <div class="w-full px-6 py-4 flex justify-between items-center border-b border-gray-200">
+        <a href="{{ url_for('BackViewPitch') }}">
+            <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 !rounded-button hover:bg-gray-100 transition whitespace-nowrap">
+                <div class="w-5 h-5 flex items-center justify-center">
+                    <i class="ri-arrow-left-line"></i>
+                </div>
+                <span>Back</span>
+            </button>
+        </a>
+    </div>
+    
+    <div class="max-w-4xl mx-auto px-6 py-10">
+        <div class="w-full border border-black !rounded-button bg-gray-50 p-6 shadow-sm">
+            <h1 class="text-2xl font-semibold mb-6">Add Proposal for Pitch</h1>
+            
+            <!-- ✅ FORM ACTION SET TO ROUTE & METHOD POST -->
+            <form id="proposalForm" action="{{ url_for('submit_proposal') }}" method="POST">
+                <div class="mb-6">
+                    <label for="pitchId" class="block mb-2 font-medium">1. Pitch ID</label>
+                    <input 
+                        type="text" 
+                        id="pitchId" 
+                        name="pitchId" 
+                        placeholder="Enter Pitch ID"
+                        class="w-full px-4 py-3 !rounded-button" 
+                        required
+                    >
+                </div>
+                
+                <div class="mb-6">
+                    <label for="pitcherId" class="block mb-2 font-medium">2. Pitcher ID</label>
+                    <input 
+                        type="text" 
+                        id="pitcherId" 
+                        name="pitcherId" 
+                        placeholder="Enter Pitcher ID"
+                        class="w-full px-4 py-3 !rounded-button" 
+                        required
+                    >
+                </div>
+                
+                <div class="mb-6">
+                    <label for="investorId" class="block mb-2 font-medium">3. Investor ID</label>
+                    <input 
+                        type="text" 
+                        id="investorId" 
+                        name="investorId" 
+                        placeholder="Enter Investor ID" 
+                        class="w-full px-4 py-3 !rounded-button" 
+                        required
+                    >
+                </div>
+                
+                <div class="mb-8">
+                    <label for="description" class="block mb-2 font-medium">4. Description</label>
+                    <textarea 
+                        id="description" 
+                        name="description"
+                        rows="6" 
+                        placeholder="Provide details about your investment proposal..." 
+                        class="w-full px-4 py-3 !rounded-button resize-none" 
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="flex justify-center">
+                    <button 
+                        type="submit" 
+                        class="px-6 py-3 bg-primary text-white font-medium !rounded-button hover:bg-blue-600 transition whitespace-nowrap"
+                    >
+                        Submit Proposal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
