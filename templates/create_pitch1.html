@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create New Pitch - Step 1 | E-Shark Tank</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 20px;
+    }
+    main {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #ddd;
+    }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .char-count {
+      text-align: right;
+      font-size: 12px;
+      color: gray;
+    }
+    .btn {
+      background: #007BFF;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <strong>E-Shark Tank</strong>
+</header>
+
+<main>
+  <h1>Create New Pitch</h1>
+  <p>Fill in the required details to start your pitch.</p>
+  
+  <form id="pitchForm" action="{{ url_for('create_pitch_step2') }}" method="POST">
+    <label for="projectTitle">Project Title</label>
+    <input type="text" id="projectTitle" name="projectTitle" placeholder="Enter project title" required>
+
+    <label for="category">Category</label>
+    <select id="category" name="category" required>
+      <option value="" disabled selected>Select a category</option>
+      <option value="technology">Technology</option>
+      <option value="ecommerce">E-commerce</option>
+      <option value="education">Education</option>
+      <option value="healthcare">Healthcare</option>
+      <option value="finance">Finance</option>
+      <option value="food">Food & Beverage</option>
+      <option value="retail">Retail</option>
+      <option value="manufacturing">Manufacturing</option>
+      <option value="agriculture">Agriculture</option>
+      <option value="energy">Energy</option>
+      <option value="other">Other</option>
+    </select>
+
+    <label for="briefDescription">Brief Description (max 200 characters)</label>
+    <textarea id="briefDescription" name="briefDescription" rows="3" maxlength="200" placeholder="Brief description..." required></textarea>
+    <div class="char-count"><span id="charCount">0</span>/200</div>
+
+    <label for="detailedDescription">Detailed Description</label>
+    <textarea id="detailedDescription" name="detailedDescription" rows="6" placeholder="Provide detailed information about your project."></textarea>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="error">
+          {% for category, message in messages %}
+            {{ message }}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <button type="submit" class="btn">Next: Financial Details</button>
+  </form>
+</main>
+
+<script>
+  const briefDescription = document.getElementById('briefDescription');
+  const charCount = document.getElementById('charCount');
+  briefDescription.addEventListener('input', () => {
+    charCount.textContent = briefDescription.value.length;
+  });
+</script>
+
+</body>
+</html>

@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,session
 import os
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 import mysql.connector
 import pymysql
 from db import get_connection
 import random
+from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 
@@ -137,42 +139,46 @@ def admin_login():
 def pitcher_login():
     email = request.form['email']
     if email.endswith('@gmail.com'):
-     username = email[:-10]  # Removes the last 10 characters: '@gmail.com'
+        username = email[:-10]  # Removes the last 10 characters: '@gmail.com'
     else:
         flash('Invalid email or password!', 'error')
         return render_template('login.html')
-     
+    
     conn = pymysql.connect(
-            host='localhost',
-            user='root',
-            password='Bhavikgarg@30',  # Plain text, no URL encoding
-            database='SharkTank6',
-            port=3306,
-            cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
+        host='localhost',
+        user='root',
+        password='Bhavikgarg@30',  # Plain text, no URL encoding
+        database='SharkTank6',
+        port=3306,
+        cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
     )
     cursor = conn.cursor()
     try:
-        query = "SELECT * FROM Audience inner join Pitcher on Audience.UserId=Pitcher.PitcherID WHERE FirstName = %s "
-        cursor.execute(query, (username))
+        query = "SELECT * FROM Audience INNER JOIN Pitcher ON Audience.UserId = Pitcher.PitcherID WHERE FirstName = %s"
+        cursor.execute(query, (username,))
         pitcher = cursor.fetchone()
+        
         if pitcher:
+            # Store pitcher info in session
             session['pitcher_id'] = pitcher['PitcherID']
-            return render_template('dash.html', pitcher=pitcher)
+            session['pitcher_email'] = username  # Store email for use in dashboard
+            
+            # Redirect to the dashboard
+            return redirect(url_for('pitcher_dashboard'))
         else:
             flash('Invalid email or password!', 'error')
             return render_template('login.html')
-
+    
     except mysql.connector.Error as err:
         print("Database error:", err)
         flash('Something went wrong. Please try again later.', 'error')
         return render_template('login.html')
-
+    
     finally:
         if cursor is not None:
             cursor.close()
         if conn is not None:
             conn.close()
-    
 
 
 @app.route('/finalized_pitches')
@@ -636,7 +642,7 @@ def BackViewPitch():
 
 @app.route('/viewProfile')
 def ViewProfile():
-    return render_template('Profile_I.html')
+    return render_template('Profile_I.html',session=session)
 
 @app.route('/InvestorLogout')
 def InvestorLogout():
@@ -644,16 +650,15 @@ def InvestorLogout():
 
 @app.route('/pitchDisp')
 def pitchDisp():
-
     try:
-        connection = get_db_connection()
-        with connection.cursor() as cursor:
+        connection = get_connection()
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:  # Make sure DictCursor is used
             query = """
                 SELECT 
                     t1.pitchid,
                     t1.equityoffered,
                     t1.popularityscore,
-                    t1.valuation,
+                    t1.valuation, 
                     t1.description,
                     t2.pitcherid
                 FROM pitch t1, pitchesproposedbypitcher t2
@@ -667,9 +672,11 @@ def pitchDisp():
                 pitch['moneydemanded'] = round((pitch['equityoffered'] * pitch['valuation']) / 100)
 
         return render_template('ViewPitchandAddPropI.html', pitches=pitch_data)
+
     except Exception as e:
         print("Error:", e)
         return "Something went wrong!"
+
 
 @app.route('/submit_proposal', methods=['POST'])
 def submit_proposal():
@@ -679,7 +686,7 @@ def submit_proposal():
     description = request.form['description']
 
     try:
-        conn = get_db_connection()
+        conn = get_connection()
         cursor = conn.cursor()
 
         query = """
@@ -705,23 +712,255 @@ def submit_proposal():
 
 @app.route('/dispDeal')
 def dispDeal():
-    connection = get_db_connection()
+    connection = get_connection()
     try:
         with connection.cursor() as cursor:
             query = """
                 SELECT proposalforpitchbyinvestor.proposal AS proposalid,
-                       proposalforpitchbyinvestor.pitcherid,
-                       proposalforpitchbyinvestor.description,
-                       proposalforpitchbyinvestor.investorid,
-                       proposalforpitchbyinvestor.pitchid
+                       proposalforpitchbyinvestor.pitcherid as pitcherid,
+                       proposalforpitchbyinvestor.description as description,
+                       proposalforpitchbyinvestor.investorid as investorid,
+                       proposalforpitchbyinvestor.pitchid as pitchid
                 FROM proposalforpitchbyinvestor, deals
-                WHERE proposalforpitchbyinvestor.proposal = deals.proposal_of_deal;
+                WHERE proposalforpitchbyinvestor.proposal = deals.proposal_of_deal and investorid = %s;
             """
-            cursor.execute(query)
+            investor_id = session.get('investorId')
+            print("Investor ID from session:", investor_id)  # Add this line
+            cursor.execute(query, (investor_id,))
             records = cursor.fetchall()
+            print("Fetched Records:", records)  # Add this line
     finally:
         connection.close()
     return render_template('Acc_Deals_I.html', deals=records)
+
+
+## start of pitcher
+
+@app.route('/dash')
+def pitcher_dashboard():
+    if 'pitcher_email' not in session:
+        return redirect(url_for('login'))
+
+    first_name = session['pitcher_email'].split('@')[0]
+    
+    pitcher_result = db.session.execute(text("""
+        SELECT p.PitcherID 
+        FROM Pitcher p
+        JOIN Audience a ON p.PitcherID = a.UserId
+        WHERE a.FirstName = :first_name
+    """), {'first_name': first_name}).fetchone()
+
+    if not pitcher_result:
+        return "You are not registered as a pitcher", 403
+    
+    pitcher_id = pitcher_result[0]
+
+    # Fetch recent pitches
+    pitches = db.session.execute(text("""
+        SELECT 
+            p.Title,
+            p.Description,
+            p.EquityOffered,
+            p.Valuation,
+            p.DateOfPost,
+            p.Domain AS Category
+        FROM Pitch p
+        JOIN PitchesProposedByPitcher pp ON p.PitchID = pp.PitchID
+        WHERE pp.PitcherID = :pitcher_id
+        ORDER BY p.DateOfPost DESC
+        LIMIT 5
+    """), {'pitcher_id': pitcher_id}).fetchall()
+
+    # Fetch investor proposals
+    investor_proposals = db.session.execute(text("""
+        SELECT 
+            prop.Proposal,
+            a.FirstName AS InvestorName,
+            p.Title AS PitchTitle,
+            prop.Description AS ProposalDescription,
+            prop.PitchID,
+            prop.InvestorID
+        FROM ProposalForPitchByInvestor prop
+        JOIN Pitch p ON prop.PitchID = p.PitchID
+        JOIN Investor i ON prop.InvestorID = i.InvestorID
+        JOIN Audience a ON i.InvestorID = a.UserId
+        WHERE prop.PitcherID = :pitcher_id
+    """), {'pitcher_id': pitcher_id}).mappings().all()
+
+    return render_template('dash.html',
+                           pitches=pitches,
+                           investor_proposals=investor_proposals)
+
+
+@app.route('/proposal/<int:proposal_id>/accept', methods=['POST'])
+def accept_proposal(proposal_id):
+    try:
+        # Insert into Deals table
+        db.session.execute(text("""
+            INSERT INTO Deals (Proposal_of_Deal)
+            VALUES (:proposal_id)
+        """), {'proposal_id': proposal_id})
+
+        db.session.commit()       
+        
+        flash('Proposal accepted, deal recorded, and proposal removed.', 'success')
+
+    except IntegrityError:
+        db.session.rollback()
+        flash('This proposal is already in Deals or something went wrong.', 'danger')
+
+    return redirect(url_for('pitcher_dashboard'))
+
+
+@app.route('/proposal/<int:proposal_id>/reject', methods=['POST'])
+def reject_proposal(proposal_id):
+    try:
+        # Delete from ProposalForPitchByInvestor
+        db.session.execute(text("""
+            DELETE FROM ProposalForPitchByInvestor
+            WHERE Proposal = :proposal_id
+        """), {'proposal_id': proposal_id})
+
+        db.session.commit()
+        flash('Proposal rejected successfully.', 'warning')
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error rejecting proposal: {e}', 'danger')
+
+    return redirect(url_for('pitcher_dashboard'))
+
+@app.route('/create_pitch')
+def create_pitch():
+    if 'pitcher_email' not in session:
+        return redirect(url_for('login'))
+    return render_template('create_pitch1.html')
+
+@app.route('/create_pitch_step2_form')
+def create_pitch_step2_form():
+    if 'pitcher_email' not in session:
+        return redirect(url_for('login'))
+        
+    pitch_data = session.get('pitch_draft')
+    if not pitch_data:
+        return redirect(url_for('create_pitch'))
+    return render_template('create_pitch_step2.html', pitch=pitch_data)
+
+@app.route('/create_pitch_step2', methods=['POST'])
+def create_pitch_step2():
+    if 'pitcher_email' not in session:
+        return redirect(url_for('login'))
+        
+    title = request.form.get('projectTitle')
+    category = request.form.get('category')
+    brief = request.form.get('briefDescription')
+    detailed = request.form.get('detailedDescription')
+
+    if not title or not category or not brief:
+        flash("Please fill in all required fields", "error")
+        return redirect(url_for('create_pitch'))
+
+    session['pitch_draft'] = {
+        'title': title,
+        'category': category,
+        'brief': brief,
+        'detailed': detailed
+    }
+
+    return redirect(url_for('create_pitch_step2_form'))
+
+@app.route('/submit_pitch', methods=['POST'])
+def submit_pitch():
+    if 'pitcher_email' not in session or 'pitch_draft' not in session:
+        return redirect(url_for('login'))
+
+    pitch_data = session['pitch_draft']
+    financial_data = {
+        'equity_offered': request.form.get('equityOffered'),
+        'valuation': request.form.get('valuation'),
+        'funding_goal': request.form.get('fundingGoal'),
+        'has_revenue': 'hasRevenue' in request.form,
+        'current_revenue': request.form.get('currentRevenue')
+    }
+
+    required_fields = ['equity_offered', 'valuation', 'funding_goal']
+    if not all(financial_data[field] for field in required_fields):
+        flash("Please fill in all required financial fields", "error")
+        return redirect(url_for('create_pitch_step2_form'))
+
+    conn = None
+    cursor = None
+    try:
+        conn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='Bhavikgarg@30',
+            database='SharkTank6',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        cursor = conn.cursor()
+
+        # Get PitcherID
+        cursor.execute("""
+            SELECT p.PitcherID as id
+            FROM Pitcher p
+            JOIN Audience a ON p.PitcherID = a.UserId
+            WHERE a.FirstName = %s
+        """, (session['pitcher_email'],))
+        result = cursor.fetchone()
+        if not result:
+            flash("Pitcher not found", "error")
+            return redirect(url_for('pitcher_dashboard'))
+
+        pitcher_id = result['id']
+
+        # Insert into Pitch table
+        cursor.execute("""
+            INSERT INTO Pitch (
+                Time, EquityOffered, Domain, Title, 
+                DateOfPost, PopularityScore, Valuation, Description
+            ) VALUES (
+                %s, %s, %s, %s, %s, %s, %s, %s
+            )
+        """, (
+            "12:33:12",
+            float(financial_data.get('equity_offered', 0)),
+            pitch_data['category'],
+            pitch_data['title'],
+            '2025-04-16',
+            0,
+            float(financial_data.get('valuation', 0)),
+            pitch_data.get('detailed') or pitch_data.get('brief')
+        ))
+        conn.commit()
+
+        pitch_id = cursor.lastrowid
+
+        # Link pitch to pitcher
+        cursor.execute("""
+            INSERT INTO PitchesProposedByPitcher (PitchID, PitcherID)
+            VALUES (%s, %s)
+        """, (pitch_id, pitcher_id))
+
+        conn.commit()
+
+        flash("Pitch created successfully!", "success")
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        flash(f"Error creating pitch: {str(e)}", "error")
+        return redirect(url_for('create_pitch_step2_form'))
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return redirect(url_for('pitcher_dashboard'))
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

@@ -86,11 +86,11 @@
         {% for deal in deals %}
         <div class="proposal-card bg-gray-50 rounded-lg p-5 border border-gray-100 shadow-sm">
           <div class="space-y-2 text-sm text-gray-700 leading-relaxed">
-            <p><span class="font-semibold">Proposal ID:</span> {{ deal.proposalid }}</p>
-            <p><span class="font-semibold">Pitch ID:</span> {{ deal.pitchid }}</p>
-            <p><span class="font-semibold">Pitcher ID:</span> {{ deal.pitcherid }}</p>
-            <p><span class="font-semibold">Investor ID:</span> {{ deal.investorid }}</p>
-            <p><span class="font-semibold">Description:</span> {{ deal.description }}</p>
+            <p><span class="font-semibold">Proposal ID:</span> {{ deal[0] or 'N/A' }}</p>
+            <p><span class="font-semibold">Pitch ID:</span> {{ deal[4] or 'N/A' }}</p>
+            <p><span class="font-semibold">Pitcher ID:</span> {{ deal[1] or 'N/A' }}</p>
+            <p><span class="font-semibold">Investor ID:</span> {{ deal[3] or 'N/A' }}</p>
+            <p><span class="font-semibold">Description:</span> {{ deal[2] or 'No description provided.' }}</p>
           </div>
         </div>
         {% endfor %}
