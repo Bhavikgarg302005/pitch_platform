@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .back-btn {
+            padding: 8px 16px;
+            background: #ddd;
+            border: none;
+            cursor: pointer;
+        }
+        .container {
+            padding: 20px;
+        }
+        .profile-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+        .profile-card h2 {
+            margin-bottom: 15px;
+        }
+        .profile-info {
+            margin-bottom: 10px;
+        }
+        .profile-info span {
+            font-weight: bold;
+        }
+        footer {
+            background: #f0f0f0;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <a href="{{ url_for('home1') }}">Home</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-card">
+            <h2>User Profile</h2>
+            <div class="profile-info">
+                <span>User ID:</span> {{ audience.UserID }}
+            </div>
+            <div class="profile-info">
+                <span>Name:</span> {{ audience.Name }}
+            </div>
+            <div class="profile-info">
+                <span>Phone Number:</span> {{ audience.PhoneNumber }}
+            </div>
+            <div class="profile-info">
+                <span>Gender:</span> {{ audience.Gender }}
+            </div>
+            <div class="profile-info">
+                <span>Date of Birth:</span> {{ audience.Age }}
+            </div>
+            <div class="profile-info">
+                <span>Authentication Status:</span> Verified
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>logo</h3>
+                <p>Your platform for discovering and engaging with innovative ideas.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,21 +1,260 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>MY first Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audience Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        header {
+            background: #f0f0f0;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .search-box {
+            width: 40%;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+        .logout-btn {
+            padding: 8px 16px;
+            background: #ddd;
+            border: none;
+            cursor: pointer;
+        }
+        .container {
+            padding: 20px;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .card button {
+            padding: 8px 16px;
+            background: #ddd;
+            border: none;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .pitch-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .pitch-card {
+            border: 1px solid #ddd;
+            background: white;
+            padding: 15px;
+        }
+        .category-date {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .category {
+            background: #e0e0ff;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        .date {
+            color: #666;
+            font-size: 12px;
+        }
+        .pitch-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .pitch-description {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .author-engage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .author {
+            font-size: 14px;
+        }
+        .engage-btn {
+            padding: 5px 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: red;
+            cursor: pointer;
+        }
+        .like-count {
+            font-size: 14px;
+            margin-left: 5px;
+            color: #333;
+        }
+        footer {
+            background: #f0f0f0;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+        }
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+        .equity {
+            color: green;
+            font-weight: bold;
+        }
+        .valuation {
+            color: blue;
+            font-weight: bold;
+        }
+        .engagement {
+            color: purple;
+            font-weight: bold;
+        }
+    </style>
 </head>
-
 <body>
-    <h1> This is hi heading</h1>
-    <h2> This is just a game bro</h2>
-    <h3> hey my name is khan </h3>
-    <hr>
-    <p>
-        some text goes here 
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sapiente pariatur veritatis animi. Atque repellendus architecto et dolor nihil iste nulla deleniti dolores, neque voluptate quaerat labore repellat veritatis iusto. Delectus?
-    </p>
+    <header>
+        <div>
+            <a href="#">Home</a>
+        </div>
+        <a href="{{ url_for('logout_for_audience') }}">
+            <button class="logout-btn">Logout</button>
+        </a>
+    </header>
+
+    <div class="container">
+        <h1>Welcome to E-shark Tank</h1>
+        <p>Fuel your curiosity — browse pitches, spot rising stars, and shape your identity.</p>
+
+        <div class="card-grid">
+            
+            <div class="card">
+                <h3>Trending Ideas</h3>
+                <p>Discover popular pitches and trending concepts</p>
+                <a href="{{ url_for('trending') }}" class="btn-link">
+                    <button>Explore Top 10</button>
+                </a>
+            </div>
+            <div class="card">
+                <h3>Profile</h3>
+                <p>Manage your personal information and settings</p>
+                <a href="{{url_for('profile')}}">
+                    <button>View Profile</button>
+                </a>
+            </div>
+            <div class="card">
+                <h3>FAQ's</h3>
+                <p>Find answers to frequently asked questions about the platform</p>
+                <button onclick="location.href='faq'">View FAQ's</button>
+            </div>
+        </div>
+
+        <div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <h2>Recent Pitches</h2>
+                <div style="margin-top: 15px;">
+                </div>
+            </div>
+            <div class="pitch-grid">
+                {% for pitch in all_pitches %}
+                <div class="pitch-card">
+                    <div class="category-date">
+                        <span class="category">{{ pitch[3] }}</span>
+                        <span class="date">{{ pitch[4] }}</span>
+                    </div>
+                    <h3 class="pitch-title">{{ pitch[4] }}</h3>
+                    <p class="pitch-description">{{ pitch[8] }}</p>
+                    <div>
+                        <span class="equity">Equity: {{ pitch[2] }}</span> |
+                        <span class="valuation">Valuation: {{ pitch[7] }}</span>
+                    </div>
+                    <div class="Date Of Post">Date Of Post: {{ pitch[5] }}</div>
+                    <div class="author-engage">
+                        
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <button class="engage-btn" onclick="incrementLike(this)">❤️</button>
+                            <span class="like-count">{{ pitch[6] }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="text-align: right; margin-top: 15px;">
+                <a href="{{ url_for('all_pitches_view') }}">View All</a>
+            </div>
+            
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>logo</h3>
+                <p>Your platform for discovering and engaging with innovative ideas.</p>
+            </div>
+            <div class="footer-links">
+                <div>
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">How It Works</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #ccc; padding-top: 15px; margin-top: 15px; display: flex; justify-content: space-between;">
+            <p>©️ 2025 Pitch Dashboard. All rights reserved.</p>
+            <div style="display: flex; gap: 10px;">
+                <a href="#">Twitter</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function incrementLike(btn) {
+            const countSpan = btn.nextElementSibling;
+            let count = parseInt(countSpan.textContent);
+            countSpan.textContent = count + 1;
+        }
+    </script>
 </body>
-
-
-
 </html>

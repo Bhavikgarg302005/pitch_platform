@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ's - E-shark Tank</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+        .container {
+            padding: 20px;
+        }
+        .faq-section {
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .faq-section h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .answer {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .back-btn {
+            padding: 8px 16px;
+            background: #ddd;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        footer {
+            background: #f0f0f0;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <a href="{{ url_for('home1') }}">Home</a>
+        </div>
+    </header>
+    <h1 style="text-align: center;">FAQ's</h1>
+
+
+    <div class="container">
+        <div class="faq-section">
+            <h2>General Information</h2>
+            <div class="question">What is E-shark Tank?</div>
+            <div class="answer">E-shark Tank is a platform where individuals can explore and pitch innovative ideas to investors and other participants.</div>
+
+            <div class="question">How can I register as a pitcher?</div>
+            <div class="answer">You can register as a pitcher by visiting change Portfolio to pitcher option.</div>
+
+            <div class="question">How Can I view all the pitches? </div>
+            <div class="answer">You can explore the pitches by clicking on the view all option on recent pitches.</div>
+        </div>
+
+        <div class="faq-section">
+            <h2>Account and Profile</h2>
+            <div class="question">How can I view my profile?</div>
+            <div class="answer">You can view your profile information by navigating to your profile page, where you can see your details, including your name, email etc..</div>
+
+            <div class="question">What should I do if I forget my password?</div>
+            <div class="answer">You can reset your password by clicking on the "Forgot Password" link on the login page and following the instructions.</div>
+        </div>
+
+        <button class="back-btn" onclick="location.href='/'">Back to Dashboard</button>
+    </div>
+
+    <footer>
+        <p>©️ 2025 Pitch Dashboard. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

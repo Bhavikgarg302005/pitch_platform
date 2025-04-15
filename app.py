@@ -3,6 +3,8 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
 import pymysql
+from db import get_connection
+import random
 
 app = Flask(__name__)
 
@@ -43,6 +45,7 @@ def get_db_connection():
 @app.route('/')
 def home():
     return render_template('lyrics.html')
+
 
 @app.route('/login')
 def login():
@@ -88,10 +91,9 @@ def audience_signup():
     cursor2.execute(query3, (first_name))
     audience = cursor2.fetchone()
     session['audienceId'] = audience['UserId']
-    return render_template('dash.html', audience=audience)
-    cursor.execute(query, values)
-    mysql.connection.commit()
+    conn.commit() 
     cursor.close()
+    return redirect(url_for('home1'))
 
 @app.route('/admin_login', methods=['POST'])
 def admin_login():
@@ -276,7 +278,7 @@ def audience_login():
         audience = cursor.fetchone()
         if audience:
             session['audienceId'] = audience['UserId']
-            return render_template('dash.html', audience=audience)
+            return redirect(url_for('home1'))
         else:
             flash('Invalid email or password!', 'error')
             return render_template('login.html')
@@ -479,6 +481,132 @@ def update_user_status(user_id, is_verified):
     finally:
         if 'conn' in locals() and conn:
             conn.close()
+
+# Fetch top 10 trending pitches
+def fetch_top_10_trending_pitches():
+    query = "SELECT * FROM Pitch ORDER BY PopularityScore DESC LIMIT 10"
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                return cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching top trending pitches: {e}")
+        return []
+
+# Fetch all pitches with sorting and search
+def fetch_all_pitches(sort_by, search_query=None):
+    query = "SELECT * FROM Pitch"
+    filters = []
+
+    if search_query:
+        query += " WHERE Title LIKE %s OR Description LIKE %s"
+        filters.extend([f"%{search_query}%", f"%{search_query}%"])
+
+    if sort_by == 'newest':
+        query += " ORDER BY DateOfPost DESC"
+    elif sort_by == 'oldest':
+        query += " ORDER BY DateOfPost ASC"
+    elif sort_by == 'highest_engagement':
+        query += " ORDER BY PopularityScore DESC"
+    elif sort_by == 'lowest_valuation':
+        query += " ORDER BY Valuation ASC"
+    elif sort_by == 'highest_valuation':
+        query += " ORDER BY Valuation DESC"
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, filters)
+                return cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching pitches: {e}")
+        return []
+
+# 🆕 API to handle like (increment popularity score)
+@app.route('/like_pitch/<int:pitch_id>', methods=['POST'])
+def like_pitch(pitch_id):
+    update_query = "UPDATE Pitch SET PopularityScore = PopularityScore + 1 WHERE PitchID = %s"
+    fetch_query = "SELECT PopularityScore FROM Pitch WHERE PitchID = %s"
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(update_query, (pitch_id,))
+                conn.commit()  # Commit the changes to the database
+                cursor.execute(fetch_query, (pitch_id,))
+                updated_score = cursor.fetchone()[0]  # Get the updated score
+        return jsonify({"updated_score": updated_score})  # Send the updated score back to the frontend
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/index')
+def home1():
+    trending_ideas = fetch_top_10_trending_pitches()
+    recent_pitches = trending_ideas[:4] if len(trending_ideas) >= 2 else trending_ideas
+    print(len(recent_pitches))
+    return render_template('index.html', all_pitches=recent_pitches, trending_ideas=trending_ideas[:4])
+
+@app.route('/all_pitches')
+def all_pitches_view():
+    sort_by = request.args.get('sort_by', default='newest')
+    search_query = request.args.get('search_query', default=None)
+    all_pitches = fetch_all_pitches(sort_by, search_query)
+    return render_template('all_pitches.html', all_pitches=all_pitches, sort_by=sort_by, search_query=search_query)
+
+
+@app.route('/trending')
+def trending():
+    trending_ideas = fetch_top_10_trending_pitches()
+    return render_template('trending.html', trending_ideas=trending_ideas)
+
+@app.route('/request_pitcher')
+def request_pitcher():
+    return render_template('request_pitcher.html')
+
+def get_user_profile(user_id):
+    query = "SELECT UserID, FirstName, Phone_Num, Gender, Is_Authenticated FROM Audience WHERE UserID = %s"
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (user_id,))
+                row = cursor.fetchone()
+                if row:
+                    return {
+                        "UserID": row[0],
+                        "Name": row[1],
+                        "PhoneNumber": row[2],
+                        "Gender": row[3],
+                        "Age": random.randint(18, 45),
+                        "AuthStatus": row[4]
+                    }
+    except Exception as e:
+        print(f"Error fetching user profile: {e}")
+    return None
+
+@app.route('/profile')
+def profile():
+    user_id = session.get('audienceId')  
+    print(user_id)
+    if not user_id:
+        print("hello1")
+        return redirect(url_for('home1'))
+    user_profile = get_user_profile(user_id)
+    if not user_profile:
+        return "User not found", 404
+
+    return render_template('profile.html', audience=user_profile)
+
+@app.route('/logout4')
+def logout_for_audience():
+    session.clear()  # This clears all session data
+    return redirect(url_for('login')) 
+
+
+@app.route('/faq')
+def faq():
+    return render_template('faq.html')
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
 
