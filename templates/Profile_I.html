@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investor Profile</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+</style>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#4F46E5',
+        secondary: '#6B7280'
+      },
+      borderRadius: {
+        'none': '0px',
+        'sm': '4px',
+        DEFAULT: '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        '2xl': '24px',
+        '3xl': '32px',
+        'full': '9999px',
+        'button': '8px'
+      }
+    }
+  }
+}
+</script>
+</head>
+<body class="bg-white text-black min-h-screen flex flex-col items-center">
+<div class="w-full max-w-4xl min-h-screen">
+  <!-- Header with back button -->
+  <header class="w-full p-6">
+    <a href="{{ url_for('BackHome') }}">
+      <button class="flex items-center justify-center w-10 h-10 !rounded-button hover:bg-gray-100">
+        <div class="w-6 h-6 flex items-center justify-center">
+          <i class="ri-arrow-left-line ri-lg"></i>
+        </div>
+      </button>
+    </a>
+  </header>
+
+  <!-- Main content -->
+  <main class="flex flex-col items-center justify-center px-4 py-12 w-full">
+    <!-- Profile Avatar -->
+    <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center mb-10">
+      <div class="w-16 h-16 flex items-center justify-center">
+        <i class="ri-user-line ri-3x"></i>
+      </div>
+    </div>
+
+    <!-- Investor ID -->
+    <div class="bg-gray-200 py-4 px-8 rounded mb-6 w-full max-w-md">
+      <div class="flex items-center justify-between">
+        <span class="text-gray-600">Investor ID</span>
+        <span class="font-bold">3</span>
+      </div>
+    </div>
+
+    <!-- Additional Information Boxes -->
+    <div class="w-full max-w-md space-y-4">
+      <div class="bg-gray-200 p-4 rounded">
+        <h3 class="font-medium mb-2">Verification Level</h3>
+        <div class="flex items-center">
+          <div class="w-5 h-5 flex items-center justify-center mr-2">
+            <i class="ri-shield-check-line"></i>
+          </div>
+          <span>Tier 3 (Fully Verified)</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Initialization code here if needed
+});
+</script>
+</body>
+</html>
