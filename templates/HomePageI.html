@@ -70,13 +70,16 @@
             </div>
           </button>
         </a>
-        <!-- Logout Button -->
-        <button class="flex items-center gap-2 px-4 py-2 bg-gray-200 border border-black !rounded-button whitespace-nowrap">
-          <span>Logout</span>
-          <div class="w-5 h-5 flex items-center justify-center">
-            <i class="ri-logout-box-line"></i>
-          </div>
-        </button>
+
+        <!-- Logout Button (wrapped in form) -->
+        <form action="{{ url_for('InvestorLogout') }}" method="get">
+          <button type="submit" class="flex items-center gap-2 px-4 py-2 bg-gray-200 border border-black !rounded-button whitespace-nowrap">
+            <span>Logout</span>
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-logout-box-line"></i>
+            </div>
+          </button>
+        </form>
       </div>
     </header>
 
