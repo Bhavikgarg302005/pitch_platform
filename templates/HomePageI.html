@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Shark Tank - Investor Dashboard</title>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    :where([class^="ri-"])::before { content: "\f3c2"; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4F46E5',
+            secondary: '#6B7280'
+          },
+          borderRadius: {
+            'none': '0px',
+            'sm': '4px',
+            DEFAULT: '8px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '20px',
+            '2xl': '24px',
+            '3xl': '32px',
+            'full': '9999px',
+            'button': '8px'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-white text-black">
+  <div class="min-h-screen w-full p-8">
+    <!-- Header Section -->
+    <header class="flex justify-between items-center mb-10">
+      <!-- Home Navigation -->
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 flex items-center justify-center">
+          <i class="ri-home-line text-black"></i>
+        </div>
+        <span class="font-medium">Home</span>
+      </div>
+
+      <!-- Profile & Logout Buttons -->
+      <div class="flex items-center gap-4">
+        <!-- Profile Button -->
+        <a href="{{ url_for('ViewProfile') }}">
+          <button class="flex items-center gap-2 px-4 py-2 bg-gray-200 border border-black !rounded-button whitespace-nowrap">
+            <span>Profile</span>
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-user-line"></i>
+            </div>
+          </button>
+        </a>
+        <!-- Logout Button -->
+        <button class="flex items-center gap-2 px-4 py-2 bg-gray-200 border border-black !rounded-button whitespace-nowrap">
+          <span>Logout</span>
+          <div class="w-5 h-5 flex items-center justify-center">
+            <i class="ri-logout-box-line"></i>
+          </div>
+        </button>
+      </div>
+    </header>
+
+    <!-- Welcome Section -->
+    <div class="mb-12">
+      <h1 class="text-4xl font-bold mb-3">Welcome to E-Shark Tank</h1>
+      <p class="text-lg text-gray-700">Fuel your curiosity - search for pitches and propose offers to pitches</p>
+    </div>
+
+    <!-- Main Content Boxes -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+      <!-- Left Box: View Pitches and Add Proposals -->
+      <div class="border border-black bg-gray-100 p-8 flex flex-col items-center justify-center min-h-[300px]">
+        <div class="w-16 h-16 flex items-center justify-center mb-4">
+          <i class="ri-presentation-line text-4xl"></i>
+        </div>
+        <h2 class="text-2xl font-semibold mb-4">View Pitches and Add Proposals</h2>
+        <p class="text-center mb-6">Browse through innovative business ideas and submit your investment proposals</p>
+        <a href="{{ url_for('ViewPitch') }}">
+          <button class="bg-gray-300 border border-black px-6 py-3 !rounded-button whitespace-nowrap font-medium">
+            Explore Pitches
+          </button>
+        </a>
+      </div>
+
+      <!-- Right Box: View All Deals -->
+      <div class="border border-black bg-gray-100 p-8 flex flex-col items-center justify-center min-h-[300px]">
+        <div class="w-16 h-16 flex items-center justify-center mb-4">
+          <i class="ri-check-double-line text-4xl"></i>
+        </div>
+        <h2 class="text-2xl font-semibold mb-4">View All Deals</h2>
+        <p class="text-center mb-6">Track your successful investments and monitor their progress</p>
+        <a href="{{ url_for('ViewAllDeals') }}">
+          <button class="bg-gray-300 border border-black px-6 py-3 !rounded-button whitespace-nowrap font-medium">
+            View Deals
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
